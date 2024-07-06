@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.TextFlow?>
+
+<AnchorPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#checkForRightClick" prefHeight="721.0" prefWidth="1000.0" stylesheets="@css/main.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.ChatClient">
+   <children>
+      <TextField fx:id="userInputField" layoutX="155.0" layoutY="669.0" prefHeight="25.0" prefWidth="823.0" />
+      <ScrollPane fx:id="scrollPaneForMainTextFlow" layoutX="155.0" layoutY="21.0" prefHeight="632.0" prefWidth="823.0" stylesheets="@css/main.css">
+         <content>
+            <TextFlow fx:id="mainTextFlow" prefHeight="632.0" prefWidth="806.0" stylesheets="@css/main.css" />
+         </content>
+      </ScrollPane>
+      <ListView fx:id="mainListView" layoutX="20.0" layoutY="21.0" prefHeight="631.0" prefWidth="120.0" />
+      <Label fx:id="chatLabel" alignment="CENTER" layoutX="20.0" layoutY="669.0" prefHeight="26.0" prefWidth="120.0" text="PUBLIC" />
+   </children>
+</AnchorPane>

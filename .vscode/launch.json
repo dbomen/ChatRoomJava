@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        { // launch za Server
+            "type": "java",
+            "name": "Server Launch",
+            "request": "launch",
+            "mainClass": "Server.ChatServer",
+        },
+        { // launch za Client
+            "type": "java",
+            "name": "App Launch",
+            "request": "launch",
+            "mainClass": "Client.Main",
+            "vmArgs": "--module-path L:/Programs/'JAVA LIBS'/javafx-sdk-22.0.1/lib --add-modules javafx.controls,javafx.fxml"
+        }
+    ]
+}

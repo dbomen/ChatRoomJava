@@ -1,0 +1,136 @@
+/* SCROLL PANE */
+#scrollPaneForMainTextFlow {
+
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-effect: dropshadow(two-pass-box, #AAAAAA, 5, 0, 0, 1);
+    -fx-background-color: primary-color;
+}
+
+/*SCROLL PANE, BARS | pasted and re-stylized, start:*/
+.scroll-bar:horizontal, .scroll-bar:vertical{
+    -fx-background-color: primary-color;
+    -fx-pref-width: 15;
+}
+
+.increment-button, .decrement-button, .increment-arrow, .decrement-arrow {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.scroll-bar:horizontal .track,
+.scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-radius: 0em;
+}
+
+.scroll-bar:horizontal .thumb,
+.scroll-bar:vertical .thumb {
+    -fx-background-color: secondary-color;
+    -fx-background-radius: 5em;
+
+}
+
+.scroll-pane > .corner {
+    -fx-background-color: primary-color;
+}
+/*end*/
+
+/* SCROLL PANE, TEXT FLOW */
+#mainTextFlow {
+
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-background-color: primary-color;
+    -fx-font-family: "Lucida Console";
+    -fx-font-size: 15;
+
+    -fx-padding: 10 10 10 10;
+
+    -fx-line-spacing: 3; /* za line spacing med texti */
+
+}
+
+/* --- */
+
+/* SEND BUTTON */
+#userInputField {
+
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-background-color: secondary-color;
+    -fx-font-family: "Lucida Console";
+    -fx-font-size: 15;
+    -fx-effect: dropshadow(two-pass-box, #AAAAAA, 5, 0, 0, 1);
+    -fx-background-radius: 0.3em;
+}
+
+/* BACKGROUND */
+
+#mainPane {
+
+    primary-color: #eeeddd;
+    secondary-color: #fffeee;
+
+    -fx-background-color: primary-color; /* primary ali secondary, idk yet */
+}
+
+/* CHAT LABEL */
+#chatLabel {
+
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-background-color: secondary-color;
+    -fx-font-family: "Lucida Console";
+    -fx-font-size: 18;
+    -fx-effect: dropshadow(two-pass-box, #AAAAAA, 5, 0, 0, 1);
+    -fx-background-radius: 0.3em;
+}
+
+/* ONLINE USERS LIST VIEW */
+#mainListView {
+
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-background-color: primary-color;
+    -fx-font-family: "Lucida Console";
+    -fx-font-size: 15;
+    -fx-effect: dropshadow(two-pass-box, #AAAAAA, 5, 0, 0, 1);
+}
+
+.list-cell {
+
+    -fx-background-color: primary-color;
+    -fx-wrap-text: true;
+    -fx-pref-width: 103; /* 103, je max, da ni horizontal scroll bara */
+}
+
+.list-cell:filled:selected:focused, .list-cell:filled:selected {
+    -fx-background-color: secondary-color;
+    -fx-text-fill: black;
+    -fx-background-radius: 0.3em;
+}
+
+/* CONTEXT MENU (BOTH) <pretty much copy paste od #mainListView>*/
+.context-menu {
+
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-background-color: secondary-color;
+    -fx-font-family: "Lucida Console";
+    -fx-font-size: 12;
+    -fx-effect: dropshadow(two-pass-box, #AAAAAA, 5, 0, 0, 1);
+    -fx-background-radius: 0.3em;
+}
+
+.menu-item:focused {
+
+    -fx-background-color: primary-color;
+    -fx-background-radius: 0.3em;
+}
+
+.menu-item:focused .label {
+
+    -fx-text-fill: black;
+}

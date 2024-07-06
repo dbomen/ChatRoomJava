@@ -1,0 +1,5 @@
+{"tipGsona":1,"tip":1,"sender":"bogo","reciever":"domen2","time":"06.07.2024 - 10:45:14","body":"ool"}
+{"tipGsona":1,"tip":1,"sender":"bogo","reciever":"domen2","time":"06.07.2024 - 10:45:19","body":"cool"}
+{"tipGsona":1,"tip":1,"sender":"bogo","reciever":"domen2","time":"06.07.2024 - 10:45:22","body":"ool"}
+{"tipGsona":1,"tip":1,"sender":"domen2","reciever":"bogo","time":"06.07.2024 - 10:45:50","body":"ool"}
+{"tipGsona":1,"tip":1,"sender":"domen2","reciever":"bogo","time":"06.07.2024 - 10:46:34","body":"yo?"}

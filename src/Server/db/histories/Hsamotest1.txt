@@ -1,0 +1,1 @@
+{"tipGsona":1,"tip":1,"sender":"samo","reciever":"test1","time":"06.07.2024 - 10:53:14","body":"private message"}

@@ -1,0 +1,32 @@
+IDEJA:
+server dobi nek formatiran message od Clienta, to interpretira server side, kar mora narediti
+
+FORMATI:
+
+START UP (SWIFT):
+1) "/singup": tells server that client wants to singup, dobi potem se ime - skos gleda ce je vredu, ko je vredu connecta
+2) else (aka login): tells server that client wants to log in, dobi ime, pogleda: {ce je ze online, ce obstaja}, ce je vse vredu connecta
+
+CONNECTED
+LOGGED IN ACTIONS (JAVAFX):
+1) shows offline messages (IF HE HAS ANY) to client
+
+CLIENT ACTIONS:
+1) "" (aka broadcast): client is requesting broadcast message, 
+    1.1) server sends the message to all ONLINE clients
+2) "@": (aka private message for ONLINE): client is requesting private message to ONLINE USER, 
+    2.1) server reads the name after '@', 
+    2.2) it checks if the users exists or if the user is offline
+        2.2.1) Sends appropriate error message
+    2.3) sends message
+3) "/" (aka command): client is requesting some command
+    3.1) "usersO": shows all online users
+    3.2) "users": shows all users
+    3.3) "history @<NAME>": shows history with appropriate user
+    3.4) "OFF @<NAME> <message>": sends message to user that is offline (IF USER EXISTS)
+
+HOW TO RUN:
+$L:\.zrelo obdobje\.School\programiranje\projects\ChatRoomJava\src
+
+LAUNCH: glej launch.json
+REFERENCED LIBS: glej settings.json

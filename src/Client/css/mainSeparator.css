@@ -1,0 +1,6 @@
+.separator .line {
+    -fx-background-color: #7D0000;
+    -fx-pref-height: 2;
+    -fx-border-color: null ;
+    -fx-opacity: 70%;
+}
