@@ -1,4 +1,3 @@
-{"tipGsona":1,"tip":1,"sender":"domen2","reciever":"domen","time":"05.07.2024 - 12:49:34","body":"yo"}
 {"tipGsona":1,"tip":1,"sender":"domen2","reciever":"domen","time":"05.07.2024 - 12:49:35","body":"yo"}
 {"tipGsona":1,"tip":1,"sender":"domen2","reciever":"domen","time":"05.07.2024 - 12:49:35","body":"yo"}
 {"tipGsona":1,"tip":1,"sender":"domen2","reciever":"domen","time":"05.07.2024 - 12:49:35","body":"yo"}
@@ -47,3 +46,4 @@
 {"tipGsona":1,"tip":1,"sender":"domen2","reciever":"domen","time":"06.07.2024 - 10:48:56","body":"yosef!!"}
 {"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"06.07.2024 - 12:01:46","body":"yo"}
 {"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"06.07.2024 - 18:05:18","body":"hihi"}
+{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"07.07.2024 - 13:52:01","body":"yoo"}

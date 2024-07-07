@@ -16,11 +16,11 @@ My first "BIG" personal project. This is a Server-Client chatroom application. I
 >     - button and/or command usability
 >     - other user-friendly abilities
 
-The application is now in a functional and acceptable state. I will slowly add some features from the *Goals* list, but this project is not my main focus anymore, as I will start other ones.
+This project was originally in another repository, but I decided to create separate repositories for "BIGGER PROJECTS". The application is now in a functional and acceptable state. I will slowly add some features from the *Goals* list, but this project is not my main focus anymore, as I will start other ones.
 
 > [!NOTE]
 > If you want to know more about how to use this application, see the [MANUAL](Manual.md)\
-> If you want to know more about how this applications works, see the [DEV MANUAL](devManual.md)
+> If you want to know more about how this applications works, see the [DEV MANUAL](DevManual.md)
 
 ### Goals
 
