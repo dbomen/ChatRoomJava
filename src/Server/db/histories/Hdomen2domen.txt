@@ -1,6 +1,5 @@
 {"tipGsona":1,"tip":1,"sender":"domen2","reciever":"domen","time":"05.07.2024 - 12:49:35","body":"yo"}
 {"tipGsona":1,"tip":1,"sender":"domen2","reciever":"domen","time":"05.07.2024 - 12:49:35","body":"yo"}
-{"tipGsona":1,"tip":1,"sender":"domen2","reciever":"domen","time":"05.07.2024 - 12:49:35","body":"yo"}
 {"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"05.07.2024 - 12:51:00","body":"nice"}
 {"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"05.07.2024 - 12:51:01","body":"nice"}
 {"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"05.07.2024 - 12:51:04","body":"welp"}
@@ -47,3 +46,5 @@
 {"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"06.07.2024 - 12:01:46","body":"yo"}
 {"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"06.07.2024 - 18:05:18","body":"hihi"}
 {"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"07.07.2024 - 13:52:01","body":"yoo"}
+{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"08.07.2024 - 11:07:51","body":"hello"}
+{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"08.07.2024 - 11:08:05","body":"hello"}

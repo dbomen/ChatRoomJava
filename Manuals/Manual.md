@@ -54,7 +54,7 @@ ___
 
 ### COMPILING AND RUNNING
 
-Since the repository has the .vscode/launch.json for both the Server and the Client, you can run the applications by going to "Run and Debug" (or Ctrl + Shift + D).\
+Since the repository has the .vscode/launch.json for both the Server and the Client, you can run the applications by going to "Run and Debug" (or CTRL + SHIFT + D).\
 ![alt text](images/dep4.png)
 
 Here you can select if you want to run the Server or the app and then run them by pressing the green run button. You should be able to run the server, but you have to change one more thing to be able to run the Client side (aka the app). Go to .vscode/launch.json and change the path, underlined in the image below, to where you downloaded the javafx SDK (make sure you include /lib).
@@ -62,39 +62,53 @@ Here you can select if you want to run the Server or the app and then run them b
 
 ## HOW TO USE
 
-// TODO:
-functionalities pejt cez kako se nardi
+To run the application:
+1) Open "Run and Debug" (or press CTRL + SHIFT + D).
+2) Select "Server Launch" and press the green run button.
+3) To run the Client, select "App Launch" and press the run button.
+
+You should only run one server at a time, but you can run multiple client applications simultaneously.
+
+Headers:
+- [SERVER SIDE](#server-side)
+- [CLIENT SIDE](#client-side)
+
+### SERVER SIDE
+
+To use the application, you don't need to worry about the server side. The server runs continuously as a passive program, responding to client requests. For more information on how the server works, refer to the [DevManual].(DevManual.md).
+
+### CLIENT SIDE
+
+
+When you first open the application, you will see the login/signup menu, built in Swift. You have two options:
+
+- **Login**: Choose an account and password from Server/db/users/.
+- **Signup**: Input your username and password, which will be saved to the server's database.
+
+The following text explains how to use and perform all actions in the Client application. I also created a short video demonstrating all the features below: [link](). 
 
 ---
-IDEJA:
-server dobi nek formatiran message od Clienta, to interpretira server side, kar mora narediti
+video TODO:
 
-FORMATI:
+- runs server / 2 client
+- login (button, enter) (pogleda v Server db)
+- public message (hello, hello)
+- changes background color (both)
+- private message (button, command)
+- history (button)
+- one leaves
+- private message
+- joins back
+- sees offline messages
+- history (se doda ta message)(command)
+---
 
-START UP (SWIFT):
-1) "/singup": tells server that client wants to singup, dobi potem se ime - skos gleda ce je vredu, ko je vredu connecta
-2) else (aka login): tells server that client wants to log in, dobi ime, pogleda: {ce je ze online, ce obstaja}, ce je vse vredu connecta
-
-CONNECTED
-LOGGED IN ACTIONS (JAVAFX):
-1) shows offline messages (IF HE HAS ANY) to client
-
-CLIENT ACTIONS:
-1) "" (aka broadcast): client is requesting broadcast message, 
-    1.1) server sends the message to all ONLINE clients
-2) "@": (aka private message for ONLINE): client is requesting private message to ONLINE USER, 
-    2.1) server reads the name after '@', 
-    2.2) it checks if the users exists or if the user is offline
-        2.2.1) Sends appropriate error message
-    2.3) sends message
-3) "/" (aka command): client is requesting some command
-    3.1) "usersO": shows all online users
-    3.2) "users": shows all users
-    3.3) "history @<NAME>": shows history with appropriate user
-    3.4) "OFF @<NAME> <message>": sends message to user that is offline (IF USER EXISTS)
-
-HOW TO RUN:
-$L:\.zrelo obdobje\.School\programiranje\projects\ChatRoomJava\src
-
-LAUNCH: glej launch.json
-REFERENCED LIBS: glej settings.json
+After logging in, you will see the main application. In version 1.0.0, the available actions and functionalities are:
+- MESSAGES
+    - [PUBLIC MESSAGES]()
+    - [PRIVATE MESSAGES]()
+    - [OFFLINE MESSAGES]()
+- ACTIONS
+    - [HISTORY]()
+- APPLICATION
+    - [COLOR]()
