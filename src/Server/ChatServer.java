@@ -15,11 +15,11 @@ import java.time.LocalDateTime;
 
 public class ChatServer {
 
-    protected static List<String> illegalNames = List.of("PUBLIC");
+    protected static List<String> illegalNames = List.of("PUBLIC", ".gitkeep");
 	protected int serverPort = 1234;
 	protected List<Socket> clients = new ArrayList<Socket>(); // list of clients
 	protected List<String> clientNames = new ArrayList<String>(); // list of client names
-	protected String projectPath = "L:/.zrelo obdobje/Programiranje/Projects/ChatRoomJava/src/Server/db"; // CHANGE THIS, IF ON OTHER COMPUTER TODO
+	protected String projectPath = "L:/.zrelo obdobje/Programiranje/Projects/ChatRoomJava/src/Server/db";
 
 
 	public static void main(String[] args) throws Exception {
@@ -140,6 +140,8 @@ public class ChatServer {
 		// create necesery folders / files
 		this.createNewFolder(newUserPath);
 		this.createNewFolder(newUserPath + "/OfflineMessages");
+        this.createNewFile(newUserPath + "/OfflineMessages/.gitkeep");
+
 		this.createNewFile(newUserPath + "/Password.txt");
 
 		// add password, uporabimo lahko kar this.writeToChat metodo, saj isto naredi
@@ -502,11 +504,14 @@ class ChatServerConnector extends Thread {
 		// ce ima kaksne neprebrane message, ki jih je dobil, ko je bil offline jim mu pokaze in izbrise file iz OfflineMessages
 		File dir = new File(String.format("%s/users/@%s/OfflineMessages", this.server.projectPath, this.name));
 		File[] offlineMessages = dir.listFiles();
-		if (offlineMessages.length > 0) {
+		if (offlineMessages.length > 1) { // ker imamo .gitkeep file, ki je placeholder, da je na githubu
 
             Map<String, ArrayList<String>> mapOfflineMessagesVsebina = new HashMap<>();
 
 			for (File offlineMessage : offlineMessages) { // gremo cez offlineMessages
+
+                // if .gitkeep we skip
+                if (offlineMessage.toString().contains(".gitkeep"))  continue;
 	
 				StringBuilder content = new StringBuilder();
 				// preberemo vsebino

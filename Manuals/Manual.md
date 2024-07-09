@@ -21,44 +21,48 @@ This manual explains the installation process and how to use/test the applicatio
 ### REPOSITORY
 - **Fork the repository**\
     Click on the "Fork" button and go to your forked version of this repository.\
-    ![alt text](images/fork1.png)
+    ![alt text](media/fork1.png)
     ___
     Make sure you are on your forked version.\
-    ![alt text](images/fork2.png)
+    ![alt text](media/fork2.png)
     ___
 
 - **Clone the repository**\
     Copy the clone link.\
-    ![alt text](images/clone1.png)
+    ![alt text](media/clone1.png)
     ___
     Open CMD, move to the folder where you want to have the repository and type: "git clone *link*", replacing *link* with your link.\
-    ![alt text](images/clone2.png)
+    ![alt text](media/clone2.png)
     ___
     You now have have a local copy of your forked version of the repository. Open Visual Studio Code and open the project (in VS code, you can use CTRL + O, and select "ChatRoomJava")\
-    ![alt text](images/clone3.png)
-    ![alt text](images/clone4.png)
+    ![alt text](media/clone3.png)\
+    ![alt text](media/clone4.png)
     ___
 
 ### DEPENDENCIES
 
 The last thing you have to do is install the dependencies. I have plans to convert this project into a Maven/Gradle project, but for now this will do. See the file .vscode/settings.json. Here you can see all the "referenced Libraries" that this project is dependent on.\
-![alt text](images/dep1.png)
+![alt text](media/dep1.png)
 
 - One is **GSON**, a library that makes it easier to work with JSON's in Java. [Link](https://search.maven.org/artifact/com.google.code.gson/gson/2.11.0/jar?eh=)
 - The other one is **JavaFx**, a GUI library that allows me to make a GUI in Java. [Link](https://gluonhq.com/products/javafx/)
 
-If you do not trust my links or if they are not working, you can also type *gson* and/or *javafx* in Google and download them that way. You have to install the JAR files from both libraries, put them into a folder of your choosing and then change the path in the settings.json file (see the underlined area in the previous picture).
-![alt text](images/dep2.png)
-![alt text](images/dep3.png)
+If you do not trust my links or if they are not working, you can also type *gson* and/or *javafx* in Google and download them that way. You have to install the JAR files from both libraries, put them into a folder of your choosing and then change the path in the settings.json file (see the underlined area in the previous picture).\
+![alt text](media/dep2.png)\
+![alt text](media/dep3.png)
 ___
 
 ### COMPILING AND RUNNING
 
 Since the repository has the .vscode/launch.json for both the Server and the Client, you can run the applications by going to "Run and Debug" (or CTRL + SHIFT + D).\
-![alt text](images/dep4.png)
+![alt text](media/dep4.png)
 
-Here you can select if you want to run the Server or the app and then run them by pressing the green run button. You should be able to run the server, but you have to change one more thing to be able to run the Client side (aka the app). Go to .vscode/launch.json and change the path, underlined in the image below, to where you downloaded the javafx SDK (make sure you include /lib).
-![alt text](images/dep5.png)
+Here you can select if you want to run the Server or the app and then run them by pressing the green run button. Now you have to change two more things to be able to run the application:
+- Go to .vscode/launch.json and change the path, underlined in the image below, to where you downloaded the javafx SDK. If your path includes spaces use ('), as you can see on my path with 'JAVA LIBS'.\
+![alt text](media/dep5.png)
+
+- Go to src/Server/ChatServer.java and change the path, underlined in the image below, to the path of your repository. Make sure to include "src/Server/db"\
+![alt text](media/dep6.png)
 
 ## HOW TO USE
 
@@ -69,46 +73,75 @@ To run the application:
 
 You should only run one server at a time, but you can run multiple client applications simultaneously.
 
+The following text explains how to use and test  the application. I also created a short video demonstrating all the features below: [link](https://www.youtube.com/watch?v=JDjVa-9h8oU).
+
 Headers:
 - [SERVER SIDE](#server-side)
 - [CLIENT SIDE](#client-side)
 
 ### SERVER SIDE
 
-To use the application, you don't need to worry about the server side. The server runs continuously as a passive program, responding to client requests. For more information on how the server works, refer to the [DevManual].(DevManual.md).
+To use the application, you don't need to worry about the server side. The server runs continuously as a passive program, responding to client requests. For more information on how the server works, refer to the [DevManual](DevManual.md).
 
 ### CLIENT SIDE
 
 
-When you first open the application, you will see the login/signup menu, built in Swift. You have two options:
+When you first open the application, you will see the login/signup menu, built in Swift. If there are any errors, you will see the server's respons in the text area. You have two options:
 
-- **Login**: Choose an account and password from Server/db/users/.
-- **Signup**: Input your username and password, which will be saved to the server's database.
-
-The following text explains how to use and perform all actions in the Client application. I also created a short video demonstrating all the features below: [link](). 
-
----
-video TODO:
-
-- runs server / 2 client
-- login (button, enter) (pogleda v Server db)
-- public message (hello, hello)
-- changes background color (both)
-- private message (button, command)
-- history (button)
-- one leaves
-- private message
-- joins back
-- sees offline messages
-- history (se doda ta message)(command)
----
+- **Login**: Choose an account and password from Server/db/users/.\
+![alt text](media/client1.png)
+- **Signup**: Input your username and password, which will be saved to the server's database.\
+![alt text](media/client2.png) 
 
 After logging in, you will see the main application. In version 1.0.0, the available actions and functionalities are:
-- MESSAGES
-    - [PUBLIC MESSAGES]()
-    - [PRIVATE MESSAGES]()
-    - [OFFLINE MESSAGES]()
-- ACTIONS
-    - [HISTORY]()
-- APPLICATION
-    - [COLOR]()
+- [MESSAGES](#messages)
+    - [PUBLIC MESSAGES](#public-messages)
+    - [PRIVATE MESSAGES](#private-messages)
+    - [OFFLINE MESSAGES](#offline-messages)
+- [ACTIONS](#actions)
+    - [HISTORY](#history)
+    - [COLOR](#color)
+
+#### MESSAGES
+
+To send a message, type it into the input field and press ENTER. The box to the left of the input field indicates the reciever. If it says "PUBLIC", your message will be sent to everyone who is online. Otherwise, it will display a specific user's name, indicating a private message.
+
+To change the reciever, click on a user in the left menu, which shows all online users. Clicking on "PUBLIC" or *your own name* sets the reciever to "PUBLIC." Alternatively, you can type "@*reciever* (*your message*)" at the beginning of your message. (don't forget about the space between the recievers name and your message)
+
+##### PUBLIC MESSAGES
+
+As the name suggests, a public message will be seen by everyone online and will appear in black. To send a public message, select "PUBLIC" or *your own name* from the left menu. Alternatively, you can use the command "@PUBLIC (*your message*)" at the beginning of your message.\
+![alt text](media/messages1.png)
+
+##### PRIVATE MESSAGES
+
+Private messages are only seen by you and the reciever and appear in blue. To send a private message, select the reciever's name from the menu or use the command "@*reciever* (*your message*)" in the input field. Using the command is useful if you want to send a private message to someone who is not currently online and therefore not listed in the menu.\
+![alt text](media/messages2.png)
+
+##### OFFLINE MESSAGES
+
+When someone sends you a private message while you are offline, it will be saved on the server and displayed when you log in. Sending a private message to someone who is offline is known as sending an offline message.\
+![alt text](media/messages3.png)
+
+#### ACTIONS
+
+Actions can either visually change the application interface or interact with the server to give or request information.
+
+##### HISTORY
+
+History with a user is a collection of your previous conversations with them, saved server-side and limited to 50 messages. You can view this history by right-clicking on the user's name in the left menu and selecting "Show History," or by using the command "@*user* /H" in the input field. The command is useful for viewing the history with someone who isn't online.\
+![alt text](media/actions1.png)\
+![alt text](media/actions2.png)\
+![alt text](media/actions3.png)
+
+
+##### COLOR
+
+By right-clicking anywhere outside the menu, you can change the color of the application. There are currently five colors to choose from:
+- Buttery Yellow (the original/default color)
+- Twilight Blue
+- Pearly Red
+- Hint Of Green
+- Mercury Purple
+  
+![alt text](media/actions4.png)
