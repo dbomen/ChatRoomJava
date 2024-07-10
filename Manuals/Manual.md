@@ -73,7 +73,7 @@ To run the application:
 
 You should only run one server at a time, but you can run multiple client applications simultaneously.
 
-The following text explains how to use and test  the application. I also created a short video demonstrating all the features below: [link](https://www.youtube.com/watch?v=JDjVa-9h8oU).
+The following text explains how to use and test the application. I also created a short video demonstrating all the features below: [link](https://www.youtube.com/watch?v=JDjVa-9h8oU).
 
 Headers:
 - [SERVER SIDE](#server-side)
@@ -81,14 +81,13 @@ Headers:
 
 ### SERVER SIDE
 
-To use the application, you don't need to worry about the server side. The server runs continuously as a passive program, responding to client requests. For more information on how the server works, refer to the [DevManual](DevManual.md).
+To use the application, you don't need to worry about the server side. The server runs continuously as a passive program, responding to client requests.
 
 ### CLIENT SIDE
 
+When you first open the application, you will see the login/signup menu, built in Swift. If there are any errors, you will see the server's response in the text area. You have two options:
 
-When you first open the application, you will see the login/signup menu, built in Swift. If there are any errors, you will see the server's respons in the text area. You have two options:
-
-- **Login**: Choose an account and password from Server/db/users/.\
+- **Login**: Choose an account and password from src/Server/db/users/.\
 ![alt text](media/client1.png)
 - **Signup**: Input your username and password, which will be saved to the server's database.\
 ![alt text](media/client2.png) 

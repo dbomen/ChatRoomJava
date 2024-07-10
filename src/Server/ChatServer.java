@@ -511,7 +511,7 @@ class ChatServerConnector extends Thread {
 			for (File offlineMessage : offlineMessages) { // gremo cez offlineMessages
 
                 // if .gitkeep we skip
-                if (offlineMessage.toString().contains(".gitkeep"))  continue;
+                if (offlineMessage.toString().equals(".gitkeep"))  continue;
 	
 				StringBuilder content = new StringBuilder();
 				// preberemo vsebino
