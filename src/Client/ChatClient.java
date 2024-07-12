@@ -25,6 +25,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
@@ -67,7 +68,7 @@ public class ChatClient extends Thread implements Initializable {
     protected ListView<String> mainListView;
 
     @FXML
-    protected ContextMenu colorsMenu;
+    protected ContextMenu settings;
 
 	public ChatClient() throws Exception {
 		this.messageFromServer = null;
@@ -108,7 +109,7 @@ public class ChatClient extends Thread implements Initializable {
 
 		this.clientName = this.messageFromServer.substring(this.messageFromServer.indexOf(' ') + 1);
 
-        // THREAD, ki vsako sekundo updates online users tab
+        // THREAD, ki vsako sekundo updates online users menu
         Thread onlineUsersUpdater = new Thread() {
 
             public void run() {
@@ -387,11 +388,11 @@ public class ChatClient extends Thread implements Initializable {
 
         if (event.getButton() == MouseButton.SECONDARY) { // ce je right click, potem pokazemo color choices
 
-            colorsMenu.show(mainPane, event.getScreenX(), event.getScreenY());
+            settings.show(mainPane, event.getScreenX(), event.getScreenY());
         }
         else {
 
-            colorsMenu.hide();
+            settings.hide();
         }
     }
 
@@ -428,12 +429,14 @@ public class ChatClient extends Thread implements Initializable {
             }
         });
 
+        // za userMenu
         this.mainListView.setCellFactory(lv -> {
 
             ListCell<String> cell = new ListCell<>();
 
             // naredimo userMenu, ki pokaze actions za user
             ContextMenu userOptions = new ContextMenu();
+
             MenuItem showHistory = new MenuItem("Show History");
             showHistory.setOnAction(event -> {
 
@@ -460,7 +463,13 @@ public class ChatClient extends Thread implements Initializable {
                 };
                 requestSender.run();
             });
-            userOptions.getItems().addAll(showHistory);
+
+            // TODO: nared, da ce je friend je namest to send private message alpa kej idk neki si zmisl
+            // TODO: nared pac setOnAction pol 
+            // TODO: nared, da seb pa "PUBLIC" pac nemors to kliknt ig
+            MenuItem addFriend = new MenuItem("Send Friend Request");
+
+            userOptions.getItems().addAll(showHistory, addFriend);
 
             // little magic :)
             cell.textProperty().bind(cell.itemProperty());
@@ -474,10 +483,38 @@ public class ChatClient extends Thread implements Initializable {
             return cell;
         });
 
-        // naredimo se colorsMenu, ki se prikaze ob desnem clicku in omogoca izbiro barve
-        this.colorsMenu = new ContextMenu();
+        // TODO: uncomment and nared namest else, if ("is friend")
+        // // za friendIcon, ce je friend online
+        // mainListView.setCellFactory(lv -> new ListCell<String>() {
 
-        ImageView imageColor1 = new ImageView(getClass().getResource("images/color1.png").toExternalForm());
+        //     private ImageView image = new ImageView(getClass().getResource("media/icons/friendIcon.png").toExternalForm());
+
+        //     @Override
+        //     public void updateItem(String name, boolean empty) {
+
+        //         super.updateItem(name, empty);
+        //         if (empty) {
+
+        //             setText(null);
+        //             setGraphic(null);
+        //         }
+        //         else {
+
+        //             image.setFitWidth(20);
+        //             image.setFitHeight(20);
+        //             setText(name);
+        //             setGraphic(image);
+        //         }
+        //     }
+        // });
+
+        // naredimo se settingsMenu, ki se prikaze ob desnem clicku
+        this.settings = new ContextMenu();
+
+        // COLORS SUBMENU
+        Menu colors = new Menu("Change Color");
+
+        ImageView imageColor1 = new ImageView(getClass().getResource("media/colors/color1.png").toExternalForm());
         imageColor1.setFitHeight(20);
         imageColor1.setFitWidth(20);
         MenuItem color1 = new MenuItem("Buttery Yellow", imageColor1);
@@ -499,7 +536,7 @@ public class ChatClient extends Thread implements Initializable {
             color21Changer.run();
         });
 
-        ImageView imageColor2 = new ImageView(getClass().getResource("images/color2.png").toExternalForm());
+        ImageView imageColor2 = new ImageView(getClass().getResource("media/colors/color2.png").toExternalForm());
         imageColor2.setFitHeight(20);
         imageColor2.setFitWidth(20);
         MenuItem color2 = new MenuItem("Twilight Blue", imageColor2);
@@ -521,7 +558,7 @@ public class ChatClient extends Thread implements Initializable {
             color22Changer.run();
         });
 
-        ImageView imageColor3 = new ImageView(getClass().getResource("images/color3.png").toExternalForm());
+        ImageView imageColor3 = new ImageView(getClass().getResource("media/colors/color3.png").toExternalForm());
         imageColor3.setFitHeight(20);
         imageColor3.setFitWidth(20);
         MenuItem color3 = new MenuItem("Pearly Red", imageColor3);
@@ -543,7 +580,7 @@ public class ChatClient extends Thread implements Initializable {
             color23Changer.run();
         });
 
-        ImageView imageColor4 = new ImageView(getClass().getResource("images/color4.png").toExternalForm());
+        ImageView imageColor4 = new ImageView(getClass().getResource("media/colors/color4.png").toExternalForm());
         imageColor4.setFitHeight(20);
         imageColor4.setFitWidth(20);
         MenuItem color4 = new MenuItem("Hint Of Green", imageColor4);
@@ -565,7 +602,7 @@ public class ChatClient extends Thread implements Initializable {
             color24Changer.run();
         });
 
-        ImageView imageColor5 = new ImageView(getClass().getResource("images/color5.png").toExternalForm());
+        ImageView imageColor5 = new ImageView(getClass().getResource("media/colors/color5.png").toExternalForm());
         imageColor5.setFitHeight(20);
         imageColor5.setFitWidth(20);
         MenuItem color5 = new MenuItem("Mercury Purple", imageColor5);
@@ -587,7 +624,12 @@ public class ChatClient extends Thread implements Initializable {
             color25Changer.run();
         });
 
-        colorsMenu.getItems().addAll(color1, color2, color3, color4, color5);
+        colors.getItems().addAll(color1, color2, color3, color4, color5);
+
+        // FRIEND LIST
+        Menu friendList = new Menu("Friends List");
+
+        this.settings.getItems().addAll(colors, friendList);
     }
 }
 

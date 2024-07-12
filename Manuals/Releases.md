@@ -6,8 +6,8 @@ This section explains the release process for this application.
 
 The release numbers follow a specific logic. Each release is represented by X.Y.Z, where X, Y, and Z fall within specific ranges:
 - X: 1
-- Y: 1 - 99 (2 new features)
-- Z: 1 - 9 (1 new feature)
+- Y: 0 - 99 (2 new features)
+- Z: 0 - 9 (1 new feature)
 
 The next release will increment the Z value by 1, i.e., X.Y.(Z + 1). When Z reaches 9, the next increment will reset Z to 0 and increment Y by 1, i.e., X.(Y + 1).0. In this case the release will contain 2 new features. Work on new features and fixes is done on a feature branch before being merged into the main branch, where the release is made official.
 

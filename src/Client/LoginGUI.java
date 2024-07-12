@@ -13,7 +13,7 @@ public class LoginGUI extends JFrame {
 	protected JButton createAccButton;
     protected JButton loginButton;
     protected JButton singupButton;
-
+    protected JButton goBackButton;
     
     public LoginGUI(ChatClient client) {
 
@@ -70,6 +70,36 @@ public class LoginGUI extends JFrame {
 		this.createAccButton.invalidate();
 		panel.add(this.createAccButton);
 
+        // go-back button (visible if client wants to sign up)
+        this.goBackButton = new JButton("Go Back");
+        this.goBackButton.setBounds(10, 110, 130, 25);
+        this.goBackButton.addActionListener(e -> { // ce je pressed potem gres nazaj na login screen
+                                                   // torej se ugasneta "Create Account" in "Go Back" buttons
+                                                   // in prizgeta "Login" and "Sign Up" buttons
+            
+            // tell the server we want to go back to login mode
+			this.client.sendMessage("GOBACK", this.client.out, true);
+
+			// hide the CreateAcc and GoBack button
+			this.createAccButton.setVisible(false);
+			this.createAccButton.invalidate();
+			
+			this.goBackButton.setVisible(false);
+			this.goBackButton.invalidate();
+
+			// show the Login button
+			this.loginButton.setVisible(true);
+			this.loginButton.validate();
+
+            // show the SignUp button
+            this.singupButton.setVisible(true);
+            this.singupButton.validate();
+            
+        });
+        this.goBackButton.setVisible(false);
+		this.goBackButton.invalidate();
+		panel.add(this.goBackButton);
+
 		// login button
 		this.loginButton = new JButton("Login");
 		this.loginButton.setBounds(10, 80, 80, 25);
@@ -102,6 +132,10 @@ public class LoginGUI extends JFrame {
 			// show the createAcc button
 			this.createAccButton.setVisible(true);
 			this.createAccButton.validate();
+
+            // show the goBack button
+            this.goBackButton.setVisible(true);
+            this.goBackButton.validate();
 		});
 		panel.add(this.singupButton);
 

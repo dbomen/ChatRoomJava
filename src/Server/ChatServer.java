@@ -432,6 +432,7 @@ class ChatServerConnector extends Thread {
 				if (input == null)  throw new Exception(); // if client closed aplication
 				if (input.equals("/singup")) { // if client wants to sing up
 	
+                    boolean goToLogin = false;
 					boolean nameAvailable = false; // checker that name is available
 					boolean inputTooLong = true; // checker that input is 20 chars or less
 					boolean inputCorrectFormat = false; // checker that input chars are >= 33 && <= 126(ascii) (od <!> naprej)
@@ -440,7 +441,14 @@ class ChatServerConnector extends Thread {
 					String password = null;
 					while (!nameAvailable || inputTooLong || !inputCorrectFormat) {
 						if (input == null) throw new Exception(); // if client closed aplication
+
 						input = this.getMessageFromClient(in);
+                        if (input.equals("GOBACK")) { // if the client wants to go back to login mode
+
+                            goToLogin = true;
+                            break;
+                        }
+
 						name = input.substring(0, input.indexOf(','));
 						password = input.substring(input.indexOf(' ') + 1);
 
@@ -461,6 +469,11 @@ class ChatServerConnector extends Thread {
                         // illegal name
                         else if (!legalName)  this.sendMessageToClient(String.format("NAME <%s> IS AN INVALID NAME, Try again!", name), out);
 					}
+
+                    if (goToLogin) { // if we are going back to login
+
+                        continue;
+                    }
 	
 					this.server.writeNewUser(name, password);
 					this.name = name;
@@ -487,6 +500,7 @@ class ChatServerConnector extends Thread {
 			server.addClientsName(this.name, ixForClientsName);
 		} catch (Exception e) {
 			System.out.println("PROBLEM WITH LOGIN IN / SING UP, removing user");
+            e.printStackTrace();
 			this.server.removeClient(this.socket, false);
 			return;
 		}
