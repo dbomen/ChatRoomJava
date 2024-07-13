@@ -11,6 +11,7 @@ public class Response {
 
     // 0 - list of online users response
     // 1 - history response
+    // 
     // 999 - showing offline messages to user (does not have Request counterpart)
     protected int tip;
     protected Collection<?> collection;

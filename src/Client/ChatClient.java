@@ -627,9 +627,11 @@ public class ChatClient extends Thread implements Initializable {
         colors.getItems().addAll(color1, color2, color3, color4, color5);
 
         // FRIEND LIST
-        Menu friendList = new Menu("Friends List");
+        Menu friendList = new Menu("Friends");
 
-        this.settings.getItems().addAll(colors, friendList);
+        Menu friendRequestList = new Menu("Friend Requests");
+
+        this.settings.getItems().addAll(colors, friendList, friendRequestList);
     }
 }
 

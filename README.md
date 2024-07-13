@@ -21,8 +21,10 @@ This project was originally in another repository, but I decided to create separ
 > [!NOTE]
 > For details about using the application, refer to the [MANUAL](Manuals/Manual.md)\
 > I created a short video showcasing all the features in version 1.0.0: [link](https://www.youtube.com/watch?v=JDjVa-9h8oU)\
-> For details about releases, refer to the [RELEASES](Manuals/Releases.md)
+> For details about releases, refer to the [RELEASES](Manuals/Releases.md)\
+> The main branch is for releases only. Checkout the feature branch to see the latest changes.
 
 ### Goals
+- **ADD BASIC FRIENDSHIP FUNCTIONALITY**
 - **FUNCTIONALITY:** Add settings to the Client side and add logic on the Server side so it saves the settings into the database, making the settings Server based (saved to the account). The Server has to send Response, carrying a JSON which holds the client's settings, to the Client on login and the Client has to interpret that correctly. For the first part of this functionality, only make it so the Client can have its GUI color saved. Will add other things later (ideas: font family, font size, ...)
 - **REPO:** Revamp the project into Maven / Gradle, not sure yet

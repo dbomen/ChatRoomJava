@@ -8,6 +8,11 @@ public class Request {
     
     // 0 - list of online users request
     // 1 - history request
+    // 
+    // 996 - sendFriendRequest | Send a friend request to someone, they Accept or Decline
+    // 997 - removeFriendRequest | Declined the friend Request
+    // 998 - removeFriend (confirmation is GsonTypes.Message) | Removing Friend
+    // 999 - addFriend (confirmation is GsonTypes.Message) | Accepted the friend Request
     protected int tip;
     protected String sender;
     protected String otherInfo; 

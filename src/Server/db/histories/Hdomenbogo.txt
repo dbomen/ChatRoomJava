@@ -1,0 +1,2 @@
+{"tipGsona":1,"tip":1,"sender":"domen","reciever":"bogo","time":"13.07.2024 - 19:11:00","body":"hello"}
+{"tipGsona":1,"tip":1,"sender":"domen","reciever":"bogo","time":"13.07.2024 - 19:11:21","body":"hello"}

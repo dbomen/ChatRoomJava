@@ -142,6 +142,10 @@ public class ChatServer {
 		this.createNewFolder(newUserPath + "/OfflineMessages");
         this.createNewFile(newUserPath + "/OfflineMessages/.gitkeep");
 
+        this.createNewFolder(newUserPath + "/Social");
+        this.createNewFile(newUserPath + "/Social/Friends.txt");
+        this.createNewFile(newUserPath + "/Social/FriendRequests.txt");
+
 		this.createNewFile(newUserPath + "/Password.txt");
 
 		// add password, uporabimo lahko kar this.writeToChat metodo, saj isto naredi
@@ -272,6 +276,20 @@ public class ChatServer {
 		}
 	}
 
+    public void writeToFileAndOverride(String fileName, String line) {
+
+        if (!this.fileExsists(fileName))  return;
+
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, false));
+			writer.write(line);
+			writer.close();
+		} catch (IOException e) {
+			System.out.println("PROBLEM WITH WRITER (write to chat and override)");
+			e.printStackTrace();
+		}
+    }
+
 	public String getChatName(String user1, String user2) {
 		String chatName1 = String.format("%s/histories/H%s%s.txt", this.projectPath, user1, user2);
 		String chatName2 = String.format("%s/histories/H%s%s.txt", this.projectPath, user2, user1);
@@ -385,6 +403,71 @@ public class ChatServer {
 		if (startIx == 0)  return niz.substring(endIx);
 		else 			   return niz.substring(0, startIx);
 	}
+
+    // creates a new friendship
+    @SuppressWarnings("unchecked")
+    public void addFriendship(String user1, String user2, String date) { // happens when you Accept a FriendRequest
+
+        // we the friend request
+
+        // we get the current Map that holds users friends
+		String fileName1 = String.format("%s/users/@%s/Social/Friends.txt", this.projectPath, user1);
+        String fileName2 = String.format("%s/users/@%s/Social/Friends.txt", this.projectPath, user2);
+        
+        Gson gson = new Gson();
+        Map<String, String> map1 = new HashMap<>();
+        Map<String, String> map2 = new HashMap<>();
+
+        // reads the Map (JSON) from file
+        if (numberOfLines(fileName1) > 0) { // if it is empty (aka no friends, we make a new Map)
+
+            try { // user1
+
+                BufferedReader reader = new BufferedReader(new FileReader(fileName1));
+                String line = reader.readLine();
+
+                map1 = gson.fromJson(line, HashMap.class);
+
+                reader.close();
+            } catch (IOException e) {
+                System.out.println("PROBLEM WITH ADDING FRIENDSHIP, user1");
+                e.printStackTrace();
+            }
+        }
+
+        if (numberOfLines(fileName2) > 0) { // if it is empty (aka no friends, we make a new Map)
+
+            try { // user2
+
+                BufferedReader reader = new BufferedReader(new FileReader(fileName2));
+                String line = reader.readLine();
+
+                map2 = gson.fromJson(line, HashMap.class);
+
+                reader.close();
+            } catch (IOException e) {
+                System.out.println("PROBLEM WITH ADDING FRIENDSHIP, user2");
+                e.printStackTrace();
+            }
+        }
+
+        // we put the new friendship in the new Map
+        map1.put(user2, date);
+        map2.put(user1, date);
+
+        // we put the make back into the DB
+        String json1 = gson.toJson(map1);
+        String json2 = gson.toJson(map2);
+
+        writeToFileAndOverride(fileName1, json1);
+        writeToFileAndOverride(fileName2, json2);
+    }
+
+    // removes friendship TODO
+    public void removeFriendship(String user1, String user2) {
+
+        
+    }
 }
 
 class ChatServerConnector extends Thread {
@@ -659,6 +742,30 @@ class ChatServerConnector extends Thread {
 
                         histories.add(0, request.getOtherInfo());
                         msg_send = new Response().createResponse(1, histories, null, request.getSender(), dtf.format(now).toString());
+                    }
+                }
+                else if (request.getTip() == 996) { // sendFriendRequest
+
+
+                }
+                else if (request.getTip() == 997) { // removeFriendRequest Request
+
+
+                }
+                else if (request.getTip() == 998) { // removeFriend Request
+
+
+                }
+                else if (request.getTip() == 999) { // addFriend Request | "otherInfo"= ime user2
+
+                    this.server.addFriendship(request.getSender(), request.getOtherInfo(), request.getTime());
+                    msg_send = new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("YOU ARE NOW FRIENDS WITH: %s", request.getOtherInfo()));
+
+                    // if the user who sent the friend request is online, we send him the message that it was accepted TODO
+                    try {
+                        this.server.sendToClientX(msg_send, null); // FIX
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
 
