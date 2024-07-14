@@ -408,7 +408,8 @@ public class ChatServer {
     @SuppressWarnings("unchecked")
     public void addFriendship(String user1, String user2, String date) { // happens when you Accept a FriendRequest
 
-        // we the friend request
+        // we remove the friend request
+        removeFriendRequest(user2, user1); // removes user2's friend request from user1's friendRequest file
 
         // we get the current Map that holds users friends
 		String fileName1 = String.format("%s/users/@%s/Social/Friends.txt", this.projectPath, user1);
@@ -455,7 +456,7 @@ public class ChatServer {
         map1.put(user2, date);
         map2.put(user1, date);
 
-        // we put the make back into the DB
+        // we put the map back into the DB
         String json1 = gson.toJson(map1);
         String json2 = gson.toJson(map2);
 
@@ -464,9 +465,178 @@ public class ChatServer {
     }
 
     // removes friendship TODO
+    @SuppressWarnings("unchecked")
     public void removeFriendship(String user1, String user2) {
 
+        // we get the current Map that holds users friends
+        String fileName1 = String.format("%s/users/@%s/Social/Friends.txt", this.projectPath, user1);
+        String fileName2 = String.format("%s/users/@%s/Social/Friends.txt", this.projectPath, user2);
         
+        Gson gson = new Gson();
+        Map<String, String> map1 = new HashMap<>();
+        Map<String, String> map2 = new HashMap<>();
+
+        // reads the Map (JSON) from file
+        try { 
+
+            BufferedReader reader = new BufferedReader(new FileReader(fileName1));
+            String line = reader.readLine();
+
+            map1 = gson.fromJson(line, HashMap.class);
+
+            reader.close();
+        } catch (IOException e) {
+            System.out.println("PROBLEM WITH ADDING FRIENDSHIP, user1");
+            e.printStackTrace();
+        }
+
+        try {
+
+            BufferedReader reader = new BufferedReader(new FileReader(fileName2));
+            String line = reader.readLine();
+
+            map2 = gson.fromJson(line, HashMap.class);
+
+            reader.close();
+        } catch (IOException e) {
+            System.out.println("PROBLEM WITH ADDING FRIENDSHIP, user2");
+            e.printStackTrace();
+        }
+
+        // we put the new friendship in the new Map
+        map1.remove(user2);
+        map2.remove(user1);
+
+        // we put the map back into the DB
+        String json1 = gson.toJson(map1);
+        String json2 = gson.toJson(map2);
+
+        writeToFileAndOverride(fileName1, json1);
+        writeToFileAndOverride(fileName2, json2);
+    }
+
+    // removes the friendRequest TODO
+    @SuppressWarnings("unchecked")
+    public void removeFriendRequest(String requestSender, String requestReciever) { // INFO: sender is the one who sent the friend request
+
+        // we get the current Set that holds recievers friendRequests
+		String fileName1 = String.format("%s/users/@%s/Social/FriendRequests.txt", this.projectPath, requestReciever);
+        
+        Gson gson = new Gson();
+        Set<String> fr = new HashSet<>();
+
+        // we read the ArrayList from the file
+        try {
+
+            BufferedReader reader = new BufferedReader(new FileReader(fileName1));
+            String line = reader.readLine();
+
+            fr = gson.fromJson(line, HashSet.class);
+
+            reader.close();
+        } catch (IOException e) {
+            System.out.println("PROBLEM WITH REMOVING FRIENDREQUEST");
+            e.printStackTrace();
+        }
+
+        // we remove the requestSender's friendRequest
+        fr.remove(requestSender);
+
+        // we put the set back into the DB
+        String json1 = gson.toJson(fr);
+
+        writeToFileAndOverride(fileName1, json1);
+    }
+
+    // sends the friendRequest TODO
+    @SuppressWarnings("unchecked")
+    public void sendFriendRequest(String sender, String reciever) {
+
+        // we get the current Set that holds recievers friendRequests
+		String fileName1 = String.format("%s/users/@%s/Social/FriendRequests.txt", this.projectPath, reciever);
+        
+        Gson gson = new Gson();
+        Set<String> fr = new HashSet<>();
+
+        // we read the ArrayList from the file
+        if (numberOfLines(fileName1) > 0) { // if the reciever has any friendRequest we have to read them, otherwise we just make a new HashSet
+
+            try {
+
+                BufferedReader reader = new BufferedReader(new FileReader(fileName1));
+                String line = reader.readLine();
+
+                fr = gson.fromJson(line, HashSet.class);
+
+                reader.close();
+            } catch (IOException e) {
+                System.out.println("PROBLEM WITH ADDING FRIENDREQUEST");
+                e.printStackTrace();
+            }
+        }
+
+        // we remove the requestSender's friendRequest
+        fr.add(sender);
+
+        // we put the set into the DB
+        String json1 = gson.toJson(fr);
+
+        writeToFileAndOverride(fileName1, json1);
+    }
+
+    @SuppressWarnings("unchecked")
+    public HashMap<String, String> getFriendsList(String user) {
+
+        // we get the file path
+		String fileName = String.format("%s/users/@%s/Social/Friends.txt", this.projectPath, user);
+
+        // we read the Map
+        Gson gson = new Gson();
+        Map<String, String> map = new HashMap<>();
+
+        if (numberOfLines(fileName) <= 0)  return null;
+        try {
+
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+            String line = reader.readLine();
+
+            map = gson.fromJson(line, HashMap.class);
+
+            reader.close();
+        } catch (IOException e) {
+            System.out.println("PROBLEM WITH GETTING FRIENDS LIST");
+            e.printStackTrace();
+        }
+
+        // we return the map
+        return (HashMap<String, String>) map;
+    }
+
+    @SuppressWarnings("unchecked")
+    public HashSet<String> getFriendRequestList(String user) {
+
+        // we get the file path
+		String fileName = String.format("%s/users/@%s/Social/FriendRequests.txt", this.projectPath, user);
+
+        // we read the Set
+        Gson gson = new Gson();
+        Set<String> map = new HashSet<>();
+
+        if (numberOfLines(fileName) <= 0)  return null;
+        try {
+
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+            String line = reader.readLine();
+
+            map = gson.fromJson(line, HashSet.class);
+
+            reader.close();
+        } catch (IOException e) {
+            System.out.println("PROBLEM WITH GETTING FRIEND REQUESTS LIST");
+            e.printStackTrace();
+        }
+
+        return (HashSet<String>) map;
     }
 }
 
@@ -744,17 +914,34 @@ class ChatServerConnector extends Thread {
                         msg_send = new Response().createResponse(1, histories, null, request.getSender(), dtf.format(now).toString());
                     }
                 }
+                else if (request.getTip() == 2) { // friends list request
+
+                    msg_send = new Response().createResponse(2, null, this.server.getFriendsList(request.getSender()), request.getSender(), dtf.format(now).toString());
+                }
+                else if (request.getTip() == 3) { // friendRequest list request
+
+                    msg_send = new Response().createResponse(3, this.server.getFriendRequestList(request.getSender()), null, request.getSender(), dtf.format(now).toString());
+                }
                 else if (request.getTip() == 996) { // sendFriendRequest
 
+                    this.server.sendFriendRequest(request.getSender(), request.getOtherInfo());
+                    msg_send = new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("YOU SENT A FRIENDREQUEST TO: %s", request.getOtherInfo()));
 
+                    // TODO: isto kot 998
                 }
                 else if (request.getTip() == 997) { // removeFriendRequest Request
 
+                    this.server.removeFriendRequest(request.getOtherInfo(), request.getSender());
+                    msg_send = new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("YOU DECLINED \"%s\"'s friend request", request.getOtherInfo()));
 
+                    // TODO: isto kot 998
                 }
                 else if (request.getTip() == 998) { // removeFriend Request
 
-
+                    this.server.removeFriendship(request.getSender(), request.getOtherInfo());
+                    msg_send = new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("YOU ARE NO LONGER FRIENDS WITH: %s", request.getOtherInfo()));
+                
+                    // TODO: add pac da posle / da v OFFLINE MESSAGE OR WATEVER se userju2 oz. user ki je bil unfriendan
                 }
                 else if (request.getTip() == 999) { // addFriend Request | "otherInfo"= ime user2
 

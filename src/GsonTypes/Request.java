@@ -8,6 +8,8 @@ public class Request {
     
     // 0 - list of online users request
     // 1 - history request
+    // 2 - friend list request
+    // 3 - friendRequests list request
     // 
     // 996 - sendFriendRequest | Send a friend request to someone, they Accept or Decline
     // 997 - removeFriendRequest | Declined the friend Request

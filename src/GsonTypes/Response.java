@@ -11,6 +11,8 @@ public class Response {
 
     // 0 - list of online users response
     // 1 - history response
+    // 2 - friend list response
+    // 3 - friendRequests list response
     // 
     // 999 - showing offline messages to user (does not have Request counterpart)
     protected int tip;
