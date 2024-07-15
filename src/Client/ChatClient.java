@@ -169,8 +169,6 @@ public class ChatClient extends Thread implements Initializable {
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-
-                            System.out.println((friendList == null) ? "NULL\n" : friendList.toString());
                         }
                     });
 
@@ -272,23 +270,10 @@ public class ChatClient extends Thread implements Initializable {
 
     public void addMessage(String message) throws InterruptedException { // TUKAJ SE INTERPRETIRA JSON, KI SMO GA DOBILI (BOLJSE IME BI BILO MOGOCE "interpretMessage" ali "recieveMessage", ampak ok)
 
-        String client = this.clientName;
-        Menu friendsList = this.friendsList;
-        Menu friendRequestsList = this.friendRequestsList;
-        Map<String, String> friendList = this.friendList;
-        List<String> friendRequestList = this.friendRequestList;
+        @SuppressWarnings("unused") // it is used, but inside the run function. VScode bugging
+        ChatClient c = this;
 
         Platform.runLater(new Runnable() {
-            
-            String nameOfClient = client;
-            Menu fl = friendsList;
-            Menu frl = friendRequestsList;
-
-            // we only change this here, we use it elsewhere
-            @SuppressWarnings("unused")
-            Map<String, String> friendList_ = friendList;
-            @SuppressWarnings("unused")
-            List<String> friendRequestList_ = friendRequestList;
             
             @SuppressWarnings("unchecked")
             public void run() {
@@ -307,7 +292,7 @@ public class ChatClient extends Thread implements Initializable {
                     Message msg = gson.fromJson(message, Message.class);
                     Text text = new Text();
 
-                    if (msg.getSender().equals(nameOfClient)) { // ce samo prikazujemo nase posiljanje
+                    if (msg.getSender().equals(c.clientName)) { // ce samo prikazujemo nase posiljanje
     
                         if (msg.getTip() == 0) {
     
@@ -382,7 +367,7 @@ public class ChatClient extends Thread implements Initializable {
                             Message msg = gson.fromJson(list.get(i), Message.class);
                             Text historyMessage = new Text();
 
-                            historyMessage.setText((msg.getSender().equals(this.nameOfClient)) ? String.format("YOU> %s\n", msg.getBody()) : String.format("%s> %s\n", msg.getSender(), msg.getBody()));
+                            historyMessage.setText((msg.getSender().equals(c.clientName)) ? String.format("YOU> %s\n", msg.getBody()) : String.format("%s> %s\n", msg.getSender(), msg.getBody()));
                             historyMessage.setFill(Color.rgb(0, 0, 125));
                             mainTextFlow.getChildren().add(historyMessage);
                         }
@@ -392,19 +377,38 @@ public class ChatClient extends Thread implements Initializable {
                         mainSeperator2.getStylesheets().add(getClass().getResource("css/mainSeparator.css").toExternalForm());
                         mainTextFlow.getChildren().add(mainSeperator2);
                     }
-                    // TODO: za 2 in 3 nared se action things (pa nared da so Menus k majo not menuItems), za zdej je sam visual ce dela
                     else if (response.getTip() == 2 && response.getMap() != null) { // response za friends list
 
-                        friendList_ = (Map<String, String>) response.getMap();
-                        System.out.println("DID THAT\n");
+                        c.friendList = (Map<String, String>) response.getMap();
 
                         // dobimo Map<Friend, Date>, uzamemo Map keys, cez njih iteriramo ter jih dodajamo v Friends list menu
                         // @SuppressWarnings("unchecked")
                         HashMap<String, String> map = (HashMap<String, String>) response.getMap();
+
+                        // pogledamo ce je bil slucajno vmes unfriend in damo tega userja ven iz list
+                        for (MenuItem item : c.friendsList.getItems()) { // gremo cez current list
+
+                            boolean stillThere = false;
+                            for (String friend : map.keySet()) { // gremo cez response list
+
+                                if (((Menu) item).getText().equals(friend)) {
+
+                                    stillThere = true;
+                                    break;
+                                }
+                            }
+
+                            if (!stillThere) {
+
+                                c.friendsList.getItems().remove(item); // we remove the item from friends
+                            }
+                        }
+
                         for (String friend : map.keySet()) { // gremo cez friends
 
+                            // pogledamo ce je new friend ter dodamo v list
                             boolean newItem = true;
-                            for (MenuItem item : fl.getItems()) {
+                            for (MenuItem item : c.friendsList.getItems()) {
 
                                 if (((Menu) item).getText().equals(friend)) {
 
@@ -412,6 +416,7 @@ public class ChatClient extends Thread implements Initializable {
                                     break;
                                 }
                             }
+
                             if (newItem) {
                                 
                                 Menu friendMenu = new Menu(friend);
@@ -432,7 +437,7 @@ public class ChatClient extends Thread implements Initializable {
                         
                                                     try {
                                                         out.writeUTF(new Request().createRequest(998, clientName, friend, dtf.format(now).toString()));
-                                                        fl.getItems().remove(friendMenu); // we remove the item from friends
+                                                        c.friendsList.getItems().remove(friendMenu); // we remove the item from friends
                                                     } catch (IOException e) {
                                                         e.printStackTrace();
                                                     }
@@ -443,14 +448,59 @@ public class ChatClient extends Thread implements Initializable {
                                     removeFriendship.run();
                                 });
 
-                                friendMenu.getItems().addAll(removeFriend);
-                                fl.getItems().add(friendMenu);
+                                MenuItem sendPrivateMessage = new MenuItem("SEND PRIVATE MESSAGE");
+                                sendPrivateMessage.setOnAction(event -> {
+
+                                    Thread t = new Thread() {
+
+                                        public void run() {
+                        
+                                            Platform.runLater(new Runnable() {
+                        
+                                                public void run() {
+                        
+                                                    c.chatLabel.setText(friend);
+                                                }
+                                            });
+                                        }
+                                    };
+                                    t.run();
+                                });
+
+                                MenuItem showHistory = new MenuItem("SHOW HISTORY");
+                                showHistory.setOnAction(event -> {
+
+                                    Thread t = new Thread() {
+
+                                        public void run() {
+                        
+                                            Platform.runLater(new Runnable() {
+                        
+                                                public void run() {
+                    
+                                                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm:ss");
+                                                    LocalDateTime now = LocalDateTime.now();
+                        
+                                                    try {
+                                                        out.writeUTF(new Request().createRequest(1, c.clientName, friend, dtf.format(now).toString()));
+                                                    } catch (IOException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    };
+                                    t.run();
+                                });
+
+                                friendMenu.getItems().addAll(removeFriend, sendPrivateMessage, showHistory);
+                                c.friendsList.getItems().add(friendMenu);
                             }
                         }
                     }
                     else if (response.getTip() == 3 && response.getCollection() != null) { // response za friend requests list
 
-                        friendRequestList_ = (ArrayList<String>) response.getCollection();
+                        c.friendRequestList = (ArrayList<String>) response.getCollection();
 
                         // dobimo Set<FriendRequest (String)>, for some reason mi da error, zato moram kot ArrayList interpreterat (no big deal)
                         // @SuppressWarnings("unchecked")
@@ -459,7 +509,7 @@ public class ChatClient extends Thread implements Initializable {
 
                             // we check if the item already exists, if it doesnt we add it
                             boolean newItem = true;
-                            for (MenuItem item : frl.getItems()) { // we iterate through Menu's not MenuItems, we have to cast it unfortunatelly
+                            for (MenuItem item : c.friendRequestsList.getItems()) { // we iterate through Menu's not MenuItems, we have to cast it unfortunatelly
 
                                 if (((Menu) item).getText().equals(friendR)) {
 
@@ -487,7 +537,7 @@ public class ChatClient extends Thread implements Initializable {
                         
                                                     try {
                                                         out.writeUTF(new Request().createRequest(999, clientName, friendR, dtf.format(now).toString()));
-                                                        frl.getItems().remove(friendRMenu);
+                                                        c.friendRequestsList.getItems().remove(friendRMenu);
                                                     } catch (IOException e) {
                                                         e.printStackTrace();
                                                     }
@@ -514,7 +564,7 @@ public class ChatClient extends Thread implements Initializable {
                         
                                                     try {
                                                         out.writeUTF(new Request().createRequest(997, clientName, friendR, dtf.format(now).toString()));
-                                                        frl.getItems().remove(friendRMenu);
+                                                        c.friendRequestsList.getItems().remove(friendRMenu);
                                                     } catch (IOException e) {
                                                         e.printStackTrace();
                                                     }
@@ -526,7 +576,7 @@ public class ChatClient extends Thread implements Initializable {
                                 });
 
                                 friendRMenu.getItems().addAll(accept, decline);
-                                frl.getItems().addAll(friendRMenu);
+                                c.friendRequestsList.getItems().addAll(friendRMenu);
                             }
                         }
                     }
@@ -713,52 +763,15 @@ public class ChatClient extends Thread implements Initializable {
                                 image.setFitHeight(20);
                                 setGraphic(image);
                             }
+                            else { // if they are not friend or they unfriend we have to remove it
+
+                                setGraphic(null);
+                            }
                         }
                     }
                 };
             }
         });
-
-        // TODO: finish da pravilno dela
-        // za friendIcon, ce je friend online
-        // // dobimo existing cellFactory
-        // Callback<ListView<String>, ListCell<String>> existingCellFactory = mainListView.getCellFactory();
-
-        // mainListView.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
-
-        //     public ListCell<String> call(ListView<String> mainListView) {
-
-        //         ListCell<String> cell = existingCellFactory.call(mainListView); // poklicemo existing cell Factory
-                
-        //         // dodamo dodatne stvari
-        //         return new ListCell<String>() {
-
-        //             private ImageView image = new ImageView(getClass().getResource("media/icons/friendIcon.png").toExternalForm());
-
-        //             @Override
-        //             public void updateItem(String name, boolean empty) {
-        
-        //                 super.updateItem(name, empty);
-        //                 cell.up
-
-        //                 if (empty) {
-        
-        //                     setText(null);
-        //                     setGraphic(null);
-        //                 }
-        //                 else if (friendList != null && !friendList.containsKey(name)) {
-        
-        //                     image.setFitWidth(20);
-        //                     image.setFitHeight(20);
-        //                     setText(name);
-        //                     setGraphic(image);
-        //                 }
-        //             }
-        //         };
-        //     }
-        // 
-        // 
-        // });
 
         // naredimo se settingsMenu, ki se prikaze ob desnem clicku
         this.settings = new ContextMenu();

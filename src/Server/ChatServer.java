@@ -464,7 +464,7 @@ public class ChatServer {
         writeToFileAndOverride(fileName2, json2);
     }
 
-    // removes friendship TODO
+    // removes friendship
     @SuppressWarnings("unchecked")
     public void removeFriendship(String user1, String user2) {
 
@@ -515,7 +515,7 @@ public class ChatServer {
         writeToFileAndOverride(fileName2, json2);
     }
 
-    // removes the friendRequest TODO
+    // removes the friendRequest
     @SuppressWarnings("unchecked")
     public void removeFriendRequest(String requestSender, String requestReciever) { // INFO: sender is the one who sent the friend request
 
@@ -548,7 +548,7 @@ public class ChatServer {
         writeToFileAndOverride(fileName1, json1);
     }
 
-    // sends the friendRequest TODO
+    // sends the friendRequest
     @SuppressWarnings("unchecked")
     public void sendFriendRequest(String sender, String reciever) {
 
@@ -778,7 +778,7 @@ class ChatServerConnector extends Thread {
 			for (File offlineMessage : offlineMessages) { // gremo cez offlineMessages
 
                 // if .gitkeep we skip
-                if (offlineMessage.toString().equals(".gitkeep"))  continue;
+                if (offlineMessage.getName().equals(".gitkeep"))  continue;
 	
 				StringBuilder content = new StringBuilder();
 				// preberemo vsebino
@@ -812,6 +812,9 @@ class ChatServerConnector extends Thread {
 
 			this.sendMessageToClient(new Response().createResponse(999, null, mapOfflineMessagesVsebina, this.name, null), out);
 		}
+
+        // TODO: posljemo other LOGIN system messages
+
 
 		while (true) { // infinite loop in which this thread waits for incoming messages and processes them
 			String msg_received;
@@ -899,6 +902,10 @@ class ChatServerConnector extends Thread {
                 Request request = gson.fromJson(msg_received, Request.class);
                 String msg_send = "";
 
+                boolean sendToOther = false;
+                String nameOfOther = "";
+                String msgToOther = "";
+
                 if (request.getTip() == 0) { // list of online users request
 
                     msg_send = new Response().createResponse(0, this.server.clientNames, null, request.getSender(), dtf.format(now).toString());
@@ -925,40 +932,59 @@ class ChatServerConnector extends Thread {
                 else if (request.getTip() == 996) { // sendFriendRequest
 
                     this.server.sendFriendRequest(request.getSender(), request.getOtherInfo());
-                    msg_send = new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("YOU SENT A FRIENDREQUEST TO: %s", request.getOtherInfo()));
+                    msg_send = new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("YOU SENT A FRIEND REQUEST TO <%s>", request.getOtherInfo()));
 
-                    // TODO: isto kot 998
+                    sendToOther = true;
+                    nameOfOther = request.getOtherInfo();
+                    msgToOther = new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("<%s> SENT YOU A FRIEND REQUEST", request.getSender()));
                 }
                 else if (request.getTip() == 997) { // removeFriendRequest Request
 
                     this.server.removeFriendRequest(request.getOtherInfo(), request.getSender());
-                    msg_send = new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("YOU DECLINED \"%s\"'s friend request", request.getOtherInfo()));
+                    msg_send = new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("YOU DECLINED <%s>'s FRIEND REQUEST", request.getOtherInfo()));
 
-                    // TODO: isto kot 998
+                    sendToOther = true;
+                    nameOfOther = request.getOtherInfo();
+                    msgToOther = new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("<%s> DECLINED YOUR FRIEND REQUEST", request.getSender()));
                 }
                 else if (request.getTip() == 998) { // removeFriend Request
 
                     this.server.removeFriendship(request.getSender(), request.getOtherInfo());
-                    msg_send = new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("YOU ARE NO LONGER FRIENDS WITH: %s", request.getOtherInfo()));
+                    msg_send = new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("YOU UNFRIENDED <%s>", request.getOtherInfo()));
                 
-                    // TODO: add pac da posle / da v OFFLINE MESSAGE OR WATEVER se userju2 oz. user ki je bil unfriendan
+                    sendToOther = true;
+                    nameOfOther = request.getOtherInfo();
+                    msgToOther = new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("<%s> UNFRIENDED YOU", request.getSender()));
                 }
                 else if (request.getTip() == 999) { // addFriend Request | "otherInfo"= ime user2
 
                     this.server.addFriendship(request.getSender(), request.getOtherInfo(), request.getTime());
-                    msg_send = new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("YOU ARE NOW FRIENDS WITH: %s", request.getOtherInfo()));
+                    msg_send = new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("<%s> IS NOW YOUR FRIEND", request.getOtherInfo()));
 
-                    // if the user who sent the friend request is online, we send him the message that it was accepted TODO
-                    try {
-                        this.server.sendToClientX(msg_send, null); // FIX
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    sendToOther = true;
+                    nameOfOther = request.getOtherInfo();
+                    msgToOther = new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("<%s> IS NOW YOUR FRIEND", request.getSender()));
                 }
 
                 try {
                     System.out.println(msg_send);
                     this.server.sendToClientX(msg_send, socket);
+
+                    if (sendToOther) { // if the request requires we send a message to some other person aswell
+
+                        // we check if the user is online
+                        int ix = this.server.clientNames.indexOf(nameOfOther);
+
+                        if (ix != -1) { // if online we send
+                            
+                            Socket socketOfOther = this.server.clients.get(ix);
+                            this.server.sendToClientX(msgToOther, socketOfOther);
+                        }
+                        else { // TODO: if offline we put to the side and show on login
+
+                            
+                        }
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
