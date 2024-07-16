@@ -3,9 +3,7 @@
 My first "BIG" personal project. This is a Server-Client chatroom application. It was originally a school project, where we had to make a command-line based chatroom with public and private messages. I have since greatly expanded on it and added:
 
 > **Server Side**
-> - Custom database (file-based), which contains:
->     - users (name, password, other logic)
->     - histories (contains all private messages sent, *50 message limit*)
+> - Custom file-based database
 > - Logic to interpret revamped Client JSON requests / other requests and new features and commands
 > - Database / file managment logic
 
@@ -25,6 +23,8 @@ This project was originally in another repository, but I decided to create separ
 > The main branch is for releases only. Checkout the feature branch to see the latest changes.
 
 ### Goals
-- **ADD BASIC FRIENDSHIP FUNCTIONALITY**
-- **FUNCTIONALITY:** Add settings to the Client side and add logic on the Server side so it saves the settings into the database, making the settings Server based (saved to the account). The Server has to send Response, carrying a JSON which holds the client's settings, to the Client on login and the Client has to interpret that correctly. For the first part of this functionality, only make it so the Client can have its GUI color saved. Will add other things later (ideas: font family, font size, ...)
-- **REPO:** Revamp the project into Maven / Gradle, not sure yet
+- **FUNCTIONALITY**
+  - **ADD BASIC FRIENDSHIP FUNCTIONALITY**
+  - **ADD SERVER SIDE SETTINGS SAVING (E.g. saving GUI color)**
+- **REPO / PROJECT BIG PICTURE:**
+  - **PROJECT REVAMP TO MAVEN / GRADLE**

@@ -148,6 +148,8 @@ public class ChatServer {
 
 		this.createNewFile(newUserPath + "/Password.txt");
 
+        this.createNewFile(newUserPath + "/SystemLogin.txt");
+
 		// add password, uporabimo lahko kar this.writeToChat metodo, saj isto naredi
 		this.writeToChat(newUserPath + "/Password.txt", password);
 	}
@@ -575,7 +577,7 @@ public class ChatServer {
             }
         }
 
-        // we remove the requestSender's friendRequest
+        // we add the requestSender's friendRequest
         fr.add(sender);
 
         // we put the set into the DB
@@ -620,7 +622,7 @@ public class ChatServer {
 
         // we read the Set
         Gson gson = new Gson();
-        Set<String> map = new HashSet<>();
+        Set<String> set = new HashSet<>();
 
         if (numberOfLines(fileName) <= 0)  return null;
         try {
@@ -628,7 +630,7 @@ public class ChatServer {
             BufferedReader reader = new BufferedReader(new FileReader(fileName));
             String line = reader.readLine();
 
-            map = gson.fromJson(line, HashSet.class);
+            set = gson.fromJson(line, HashSet.class);
 
             reader.close();
         } catch (IOException e) {
@@ -636,7 +638,71 @@ public class ChatServer {
             e.printStackTrace();
         }
 
-        return (HashSet<String>) map;
+        return (HashSet<String>) set;
+    }
+
+    @SuppressWarnings("unchecked")
+    public void addToSystemLoginList(String user, String message) {
+    
+        // we get the current Set that holds recievers friendRequests
+        String fileName = String.format("%s/users/@%s/SystemLogin.txt", this.projectPath, user);
+        
+        Gson gson = new Gson();
+        List<String> list = new ArrayList<>();
+
+        // we read the ArrayList from the file
+        if (numberOfLines(fileName) > 0) { // if the user has any other messages we read them
+
+            try {
+
+                BufferedReader reader = new BufferedReader(new FileReader(fileName));
+                String line = reader.readLine();
+
+                list = gson.fromJson(line, ArrayList.class);
+
+                reader.close();
+            } catch (IOException e) {
+                System.out.println("PROBLEM WITH ADDING TO SYSTEM LOGIN LIST");
+                e.printStackTrace();
+            }
+        }
+
+        // we add the system message to the list
+        list.add(message);
+
+        // we put the list into the DB
+        String json1 = gson.toJson(list);
+
+        writeToFileAndOverride(fileName, json1);
+    }
+
+    @SuppressWarnings("unchecked")
+    public ArrayList<String> getAndRemoveSystemLoginList(String user) {
+
+        // we get the file path
+		String fileName = String.format("%s/users/@%s/SystemLogin.txt", this.projectPath, user);
+
+        // we read the ArrayList
+        Gson gson = new Gson();
+        List<String> list = new ArrayList<>();
+
+        if (numberOfLines(fileName) <= 0)  return null;
+        try {
+
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+            String line = reader.readLine();
+
+            list = gson.fromJson(line, ArrayList.class);
+
+            reader.close();
+        } catch (IOException e) {
+            System.out.println("PROBLEM WITH GETTING SYSTEM LOGIN LIST");
+            e.printStackTrace();
+        }
+
+        writeToFileAndOverride(fileName, gson.toJson(new ArrayList<String>())); // we reset the list back to nothing
+
+        return (ArrayList<String>) list;
     }
 }
 
@@ -813,8 +879,29 @@ class ChatServerConnector extends Thread {
 			this.sendMessageToClient(new Response().createResponse(999, null, mapOfflineMessagesVsebina, this.name, null), out);
 		}
 
-        // TODO: posljemo other LOGIN system messages
+        // poslejmo response (998), ki ma noter array list od SYSTEM, noter so messages
+        // STEPS: make List, add "you have X friend req." (if X > 0), check the SystemLogin.txt file, add lines from it, DONE. (za future lahko pac dodas se ksn login message ce hocs)
+        List<String> loginMessages = new ArrayList<>();
 
+        // we check for number of friend requests
+        Set<String> listOfFriendRequests = this.server.getFriendRequestList(this.name);
+        if (listOfFriendRequests != null && listOfFriendRequests.size() > 0) { // if not empty
+
+            loginMessages.add(new Message().createJson(2, "SYSTEM", null, null, String.format("YOU HAVE %d PENDING FRIEND REQUESTS", listOfFriendRequests.size())));
+        }
+
+        // we check if there is anything in the SystemLogin.txt file
+        List<String> systemLoginMessages = this.server.getAndRemoveSystemLoginList(this.name);
+        if (systemLoginMessages != null && systemLoginMessages.size() > 0)  loginMessages.addAll(systemLoginMessages);
+
+        // other messages for future logic do here
+        // PS: keep in mind that the Client interprets the 998 response as List of Strings (which are JSON's of GsonTypes.Message), so if you want to send something else on login you have to make a revamp:
+
+        // we send the 998 response to client
+        this.sendMessageToClient(new Response().createResponse(998, loginMessages, null, this.name, null), out);
+
+        // ---
+        // LOGED IN
 
 		while (true) { // infinite loop in which this thread waits for incoming messages and processes them
 			String msg_received;
@@ -980,9 +1067,9 @@ class ChatServerConnector extends Thread {
                             Socket socketOfOther = this.server.clients.get(ix);
                             this.server.sendToClientX(msgToOther, socketOfOther);
                         }
-                        else { // TODO: if offline we put to the side and show on login
+                        else {
 
-                            
+                            this.server.addToSystemLoginList(nameOfOther, msgToOther);
                         }
                     }
                 } catch (Exception e) {

@@ -14,6 +14,7 @@ public class Response {
     // 2 - friend list response
     // 3 - friendRequests list response
     // 
+    // 998 - on login response (no Request counterpart)
     // 999 - showing offline messages to user (does not have Request counterpart)
     protected int tip;
     protected Collection<?> collection;

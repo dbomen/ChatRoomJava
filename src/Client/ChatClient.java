@@ -270,7 +270,7 @@ public class ChatClient extends Thread implements Initializable {
 
     public void addMessage(String message) throws InterruptedException { // TUKAJ SE INTERPRETIRA JSON, KI SMO GA DOBILI (BOLJSE IME BI BILO MOGOCE "interpretMessage" ali "recieveMessage", ampak ok)
 
-        @SuppressWarnings("unused") // it is used, but inside the run function. VScode bugging
+        // @SuppressWarnings("unused") // it is used, but inside the run function. VScode bugging
         ChatClient c = this;
 
         Platform.runLater(new Runnable() {
@@ -579,6 +579,28 @@ public class ChatClient extends Thread implements Initializable {
                                 c.friendRequestsList.getItems().addAll(friendRMenu);
                             }
                         }
+                    }
+                    else if (response.getTip() == 998) { // response za SystemLogin
+
+                        ArrayList<String> systemLoginMessages = (ArrayList<String>) response.getCollection();
+                        System.out.printf("LOGIN ARRAY: %s\n", systemLoginMessages.toString());
+
+                        for (String message : systemLoginMessages) {
+
+                            Message msg = gson.fromJson(message, Message.class);
+
+                            Text systemText = new Text(String.format("[SYSTEM] %s\n", msg.getBody()));
+                            systemText.setFill(Color.rgb(125, 0, 0));
+                            mainTextFlow.getChildren().add(systemText);
+                        }
+
+                        Text newLine = new Text("\n");
+                        mainTextFlow.getChildren().add(newLine);
+
+                        Separator systemSeperator = new Separator(Orientation.HORIZONTAL);
+                        systemSeperator.prefWidthProperty().bind(mainTextFlow.widthProperty());
+                        systemSeperator.getStylesheets().add(getClass().getResource("css/systemSeperator.css").toExternalForm());
+                        mainTextFlow.getChildren().add(systemSeperator);
                     }
                     else if (response.getTip() == 999) { // response za showing offline messages to user
 
