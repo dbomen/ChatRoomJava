@@ -1,11 +1,3 @@
-{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"05.07.2024 - 12:55:49","body":"yo"}
-{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"05.07.2024 - 12:55:49","body":"yo"}
-{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"05.07.2024 - 12:55:50","body":"yo"}
-{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"05.07.2024 - 12:55:50","body":"yo"}
-{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"05.07.2024 - 12:55:51","body":"yo"}
-{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"05.07.2024 - 12:56:03","body":"yo"}
-{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"05.07.2024 - 12:56:04","body":"yo"}
-{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"05.07.2024 - 12:56:06","body":"nice"}
 {"tipGsona":1,"tip":1,"sender":"domen2","reciever":"domen","time":"05.07.2024 - 12:56:46","body":"testting"}
 {"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"05.07.2024 - 12:58:17","body":"test"}
 {"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"05.07.2024 - 12:59:20","body":"testtin"}
@@ -47,3 +39,11 @@
 {"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"16.07.2024 - 13:49:43","body":"yo"}
 {"tipGsona":1,"tip":1,"sender":"domen2","reciever":"domen","time":"16.07.2024 - 13:49:50","body":"yo wadap"}
 {"tipGsona":1,"tip":1,"sender":"domen2","reciever":"domen","time":"16.07.2024 - 22:23:00","body":"test"}
+{"tipGsona":1,"tip":1,"sender":"domen2","reciever":"domen","time":"17.07.2024 - 17:59:00","body":"hi"}
+{"tipGsona":1,"tip":1,"sender":"domen2","reciever":"domen","time":"17.07.2024 - 17:59:05","body":"test"}
+{"tipGsona":1,"tip":1,"sender":"domen2","reciever":"domen","time":"17.07.2024 - 18:00:38","body":"test"}
+{"tipGsona":1,"tip":1,"sender":"domen2","reciever":"domen","time":"17.07.2024 - 18:01:03","body":"yest"}
+{"tipGsona":1,"tip":1,"sender":"domen2","reciever":"domen","time":"17.07.2024 - 18:11:52","body":"yest"}
+{"tipGsona":1,"tip":1,"sender":"domen2","reciever":"domen","time":"17.07.2024 - 18:45:07","body":"hello"}
+{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"17.07.2024 - 18:45:23","body":"yo"}
+{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"17.07.2024 - 18:53:19","body":"to"}

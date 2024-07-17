@@ -408,10 +408,20 @@ public class ChatServer {
 
     // creates a new friendship
     @SuppressWarnings("unchecked")
-    public void addFriendship(String user1, String user2, String date) { // happens when you Accept a FriendRequest
+    public boolean addFriendship(String user1, String user2, String date) { // happens when you Accept a FriendRequest
 
         // we remove the friend request
-        removeFriendRequest(user2, user1); // removes user2's friend request from user1's friendRequest file
+        if (!removeFriendRequest(user2, user1)) { // removes user2's friend request from user1's friendRequest file
+                                                 // if the friend request doesnt exist we return false
+            return false;
+        };
+
+        // we check if they are already friends
+        boolean alreadyFriends = this.getFriendsList(user1).containsKey(user2);
+        if (alreadyFriends) {
+
+            return false;
+        }
 
         // we get the current Map that holds users friends
 		String fileName1 = String.format("%s/users/@%s/Social/Friends.txt", this.projectPath, user1);
@@ -464,6 +474,8 @@ public class ChatServer {
 
         writeToFileAndOverride(fileName1, json1);
         writeToFileAndOverride(fileName2, json2);
+
+        return true;
     }
 
     // removes friendship
@@ -519,7 +531,8 @@ public class ChatServer {
 
     // removes the friendRequest
     @SuppressWarnings("unchecked")
-    public void removeFriendRequest(String requestSender, String requestReciever) { // INFO: sender is the one who sent the friend request
+    public boolean removeFriendRequest(String requestSender, String requestReciever) { // INFO: sender is the one who sent the friend request
+                                                                                       // true - we removed | false - the item does not exist
 
         // we get the current Set that holds recievers friendRequests
 		String fileName1 = String.format("%s/users/@%s/Social/FriendRequests.txt", this.projectPath, requestReciever);
@@ -542,17 +555,19 @@ public class ChatServer {
         }
 
         // we remove the requestSender's friendRequest
-        fr.remove(requestSender);
+        boolean removed = fr.remove(requestSender);
 
         // we put the set back into the DB
         String json1 = gson.toJson(fr);
 
         writeToFileAndOverride(fileName1, json1);
+
+        return removed;
     }
 
     // sends the friendRequest
     @SuppressWarnings("unchecked")
-    public void sendFriendRequest(String sender, String reciever) {
+    public boolean sendFriendRequest(String sender, String reciever) { // returns true if all good / false if the friend request already exists
 
         // we get the current Set that holds recievers friendRequests
 		String fileName1 = String.format("%s/users/@%s/Social/FriendRequests.txt", this.projectPath, reciever);
@@ -578,12 +593,14 @@ public class ChatServer {
         }
 
         // we add the requestSender's friendRequest
-        fr.add(sender);
+        boolean added = fr.add(sender);
 
         // we put the set into the DB
         String json1 = gson.toJson(fr);
 
         writeToFileAndOverride(fileName1, json1);
+
+        return added;
     }
 
     @SuppressWarnings("unchecked")
@@ -717,6 +734,7 @@ class ChatServerConnector extends Thread {
 	}
 
 	public void run() {
+
 		// za inpute
 		DataInputStream in;
 		try {
@@ -753,12 +771,12 @@ class ChatServerConnector extends Thread {
 	
                     boolean goToLogin = false;
 					boolean nameAvailable = false; // checker that name is available
-					boolean inputTooLong = true; // checker that input is 20 chars or less
+					boolean inputTooLong = true; // checker that input is 20 chars or less than 3
 					boolean inputCorrectFormat = false; // checker that input chars are >= 33 && <= 126(ascii) (od <!> naprej)
                     boolean legalName = false; // checker that the name is not from illegalNames
 					name = null;
 					String password = null;
-					while (!nameAvailable || inputTooLong || !inputCorrectFormat) {
+					while (!nameAvailable || inputTooLong || !inputCorrectFormat || !legalName) {
 						if (input == null) throw new Exception(); // if client closed aplication
 
 						input = this.getMessageFromClient(in);
@@ -771,22 +789,22 @@ class ChatServerConnector extends Thread {
 						name = input.substring(0, input.indexOf(','));
 						password = input.substring(input.indexOf(' ') + 1);
 
-						inputTooLong = (name.length() > 20 || password.length() > 20) ? true : false;
+						inputTooLong = (name.length() > 20 || name.length() < 3 || password.length() > 20 || password.length() < 3) ? true : false;
 						inputCorrectFormat = this.server.checkRightAscii(name) && this.server.checkRightAscii(password);
 						nameAvailable = this.server.CheckNameAvailibilty(name);
                         legalName = !(ChatServer.illegalNames.contains(name));
 
 						// name or password too long (max. 20 chars)
-						if (inputTooLong)  this.sendMessageToClient("NAME OR PASSWORD TOO LONG, max. size is 20!", out);
+						if (inputTooLong)  this.sendMessageToClient("NAME OR PASSWORD TOO LONG, MAX SIZE IS 20, MIN IS 3! Try again!", out);
 
 						// invisible characters (ascii < 33 || ascii > 126)
-						else if (!inputCorrectFormat)  this.sendMessageToClient("FOUND INVISIBLE ASCII CHARACTERS, Try again!", out);
+						else if (!inputCorrectFormat)  this.sendMessageToClient("FOUND INVISIBLE ASCII CHARACTERS, ALLOWED ASCII 33 - 126! Try again!", out);
 
 						// name not available
 						else if (!nameAvailable)  this.sendMessageToClient(String.format("NAME <%s> NOT AVAILABLE, Try again!", name), out);
 
                         // illegal name
-                        else if (!legalName)  this.sendMessageToClient(String.format("NAME <%s> IS AN INVALID NAME, Try again!", name), out);
+                        else if (!legalName)  this.sendMessageToClient(String.format("NAME <%s> IS NOT ALLOWED, Try again!", name), out);
 					}
 
                     if (goToLogin) { // if we are going back to login
@@ -860,12 +878,17 @@ class ChatServerConnector extends Thread {
 	
                 // logika za pridobivanje potrebnih spremenljivk 
 				int numberOfMessages = Integer.valueOf(content.toString().substring(content.toString().indexOf(' ') + 1));
-				String sender = this.server.findNonMatching(content.toString().substring(1, content.toString().indexOf('.')), this.name);
 				String fileToReadFrom = content.toString().substring(0, content.toString().indexOf(','));
 
                 // preberemo vsebino in vzamemo samo zadnjih <numberOfMessages>
                 ArrayList<String> mapList = new ArrayList<>();
                 ArrayList<String> historyMessages = this.server.getHistory(String.format("%s/histories/%s", this.server.projectPath, fileToReadFrom)); // dobimo cel history
+                
+                // we get the sender's name
+                Gson gson = new Gson();
+                Message historyMessage = gson.fromJson(historyMessages.get(0), Message.class);
+                String sender = (historyMessage.getSender().equals(this.name)) ? historyMessage.getReciever() : historyMessage.getSender();
+
                 for (int i = historyMessages.size() - numberOfMessages; i < historyMessages.size(); i++) { // ArrayList dodajamo potrebne messages
 
                     mapList.add(historyMessages.get(i));
@@ -947,11 +970,14 @@ class ChatServerConnector extends Thread {
 
                     String msg_send = "";
                     Socket socketC = this.socket;
+
+                    boolean selfMessage = json.getSender().equals(json.getReciever());
     
+                    if ((indexC == -1 && this.server.CheckNameAvailibilty(json.getReciever())) || selfMessage) { // if the client doesnt exist or the user wants to send a private message to himself
 
-                    if (indexC == -1 && this.server.CheckNameAvailibilty(json.getReciever())) { // if the client doesnt exist
-
-                        msg_send = new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("Client name <%s> not found! message not sent!", json.getReciever()));
+                        msg_send = (selfMessage)
+                                    ? new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("YOU CANNOT SEND A MESSAGE TO YOURSELF", json.getReciever()))
+                                    : new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("CLIENT <%s> NOT FOUND! MESSAGE NOT SENT!", json.getReciever()));
                     }
                     else { // if the client exists (online / offline)
 
@@ -968,7 +994,7 @@ class ChatServerConnector extends Thread {
 
                             this.server.addToOfflineMessages(this.server.getChatName(this.name, json.getReciever()), json.getReciever(), msg_send);
                             msg_send = new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), 
-                            String.format("Client name <%s> is offline, they will see the message on log in", json.getReciever()));
+                            String.format("CLIENT <%s> IS OFFLINE, THEY WILL SEE THE MESSAGE ON LOG IN", json.getReciever()));
                         }             
                     }
     
@@ -1018,39 +1044,72 @@ class ChatServerConnector extends Thread {
                 }
                 else if (request.getTip() == 996) { // sendFriendRequest
 
-                    this.server.sendFriendRequest(request.getSender(), request.getOtherInfo());
-                    msg_send = new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("YOU SENT A FRIEND REQUEST TO <%s>", request.getOtherInfo()));
+                    boolean alreadyFriends = this.server.getFriendsList(request.getSender()).containsKey(request.getOtherInfo());
+                    boolean selfFriend = request.getSender().equals(request.getOtherInfo());
+                    boolean newFriendRequest = (alreadyFriends || selfFriend) ? false : this.server.sendFriendRequest(request.getSender(), request.getOtherInfo());
 
-                    sendToOther = true;
-                    nameOfOther = request.getOtherInfo();
-                    msgToOther = new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("<%s> SENT YOU A FRIEND REQUEST", request.getSender()));
+                    msg_send = (newFriendRequest)
+                                ? new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("YOU SENT A FRIEND REQUEST TO <%s>", request.getOtherInfo()))
+                                : (alreadyFriends)
+                                    ? new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("YOU ARE ALREADY FRIENDS WITH <%s>", request.getOtherInfo()))
+                                    : (selfFriend)
+                                        ? new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("YOU CANNOT SEND A FRIENDREQUEST TO YOURSELF!", request.getOtherInfo()))
+                                        : new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("YOU HAVE ALREADY SENT A FRIEND REQUEST TO <%s>", request.getOtherInfo()));
+
+                    if (newFriendRequest) {
+
+                        sendToOther = true;
+                        nameOfOther = request.getOtherInfo();
+                        msgToOther = new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("<%s> SENT YOU A FRIEND REQUEST", request.getSender()));
+                    }
                 }
                 else if (request.getTip() == 997) { // removeFriendRequest Request
 
-                    this.server.removeFriendRequest(request.getOtherInfo(), request.getSender());
-                    msg_send = new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("YOU DECLINED <%s>'s FRIEND REQUEST", request.getOtherInfo()));
+                    boolean friendRequestExists = this.server.getFriendRequestList(request.getSender()).contains(request.getOtherInfo());
 
-                    sendToOther = true;
-                    nameOfOther = request.getOtherInfo();
-                    msgToOther = new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("<%s> DECLINED YOUR FRIEND REQUEST", request.getSender()));
+                    this.server.removeFriendRequest(request.getOtherInfo(), request.getSender());
+                    msg_send = (friendRequestExists)
+                                ? new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("YOU DECLINED <%s>'s FRIEND REQUEST", request.getOtherInfo()))
+                                : new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("SERVER ERROR. NOT REMOVED", request.getOtherInfo()));
+
+                    if (friendRequestExists) {
+
+                        sendToOther = true;
+                        nameOfOther = request.getOtherInfo();
+                        msgToOther = new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("<%s> DECLINED YOUR FRIEND REQUEST", request.getSender()));
+                    }
                 }
                 else if (request.getTip() == 998) { // removeFriend Request
 
+                    boolean areFriends = this.server.getFriendsList(request.getSender()).containsKey(request.getOtherInfo());
+
                     this.server.removeFriendship(request.getSender(), request.getOtherInfo());
-                    msg_send = new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("YOU UNFRIENDED <%s>", request.getOtherInfo()));
+                    msg_send = (areFriends)
+                                ? new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("YOU UNFRIENDED <%s>", request.getOtherInfo()))
+                                : new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("SERVER ERROR. NOT UNFRIENDED", request.getOtherInfo()));
                 
-                    sendToOther = true;
-                    nameOfOther = request.getOtherInfo();
-                    msgToOther = new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("<%s> UNFRIENDED YOU", request.getSender()));
+                    if (areFriends) {
+
+                        sendToOther = true;
+                        nameOfOther = request.getOtherInfo();
+                        msgToOther = new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("<%s> UNFRIENDED YOU", request.getSender()));
+                    }
+                    
                 }
                 else if (request.getTip() == 999) { // addFriend Request | "otherInfo"= ime user2
 
-                    this.server.addFriendship(request.getSender(), request.getOtherInfo(), request.getTime());
-                    msg_send = new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("<%s> IS NOW YOUR FRIEND", request.getOtherInfo()));
+                    boolean addedFriendship = this.server.addFriendship(request.getSender(), request.getOtherInfo(), request.getTime());
 
-                    sendToOther = true;
-                    nameOfOther = request.getOtherInfo();
-                    msgToOther = new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("<%s> IS NOW YOUR FRIEND", request.getSender()));
+                    msg_send = (addedFriendship)
+                                ? new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("<%s> IS NOW YOUR FRIEND", request.getOtherInfo()))
+                                : new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("SERVER ERROR. NOT FRIENDED", request.getOtherInfo()));
+
+                    if (addedFriendship) {
+
+                        sendToOther = true;
+                        nameOfOther = request.getOtherInfo();
+                        msgToOther = new Message().createJson(2, "SYSTEM", null, dtf.format(now).toString(), String.format("<%s> IS NOW YOUR FRIEND", request.getSender()));
+                    }
                 }
 
                 try {

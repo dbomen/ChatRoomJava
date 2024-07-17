@@ -129,7 +129,7 @@ public class ChatClient extends Thread implements Initializable {
 
                             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm:ss");
                             LocalDateTime now = LocalDateTime.now();
-
+        
                             try {
                                 out.writeUTF(new Request().createRequest(0, clientName, null, dtf.format(now).toString()));
                             } catch (IOException e) {
@@ -162,7 +162,7 @@ public class ChatClient extends Thread implements Initializable {
 
                             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm:ss");
                             LocalDateTime now = LocalDateTime.now();
-
+        
                             try {
                                 out.writeUTF(new Request().createRequest(2, clientName, null, dtf.format(now).toString()));
                                 out.writeUTF(new Request().createRequest(3, clientName, null, dtf.format(now).toString()));
@@ -228,17 +228,20 @@ public class ChatClient extends Thread implements Initializable {
                 if (message.charAt(0) == '@') { // ce uporablja command "@" za private messages
 
                     int endIndex = 0;
-                    for (; message.charAt(endIndex) != ' '; endIndex++);
+                    for (; endIndex < message.length() && message.charAt(endIndex) != ' '; endIndex++);
 					ciljniClient = message.substring(1, endIndex);
 
-                    if (message.charAt(endIndex + 1) == '/') { // ce uporabi kaksen command (za zdaj je samo history)
+                    if (endIndex > 1) { 
+                        if (message.charAt(endIndex + 1) == '/' && endIndex + 2 < message.length()) { // ce uporabi kaksen command (za zdaj je samo history)
+                                                                                                      // TODO 2. pogoj INFO: CHANGE NA +X, ce bos meu commands, ki bodo daljse kot 1 crka
 
-                        if (message.charAt(endIndex + 2) == 'H')  msg_send = new Request().createRequest(1, clientName, ciljniClient, dtf.format(now).toString());
-                    }
-                    else { // ce je normal private message
+                            if (message.charAt(endIndex + 2) == 'H')  msg_send = new Request().createRequest(1, clientName, ciljniClient, dtf.format(now).toString());
+                        }
+                        else { // ce je normal private message
 
-                        this.chatLabel.setText(ciljniClient);
-                        msg_send = new Message().createJson(1, this.clientName, ciljniClient, dtf.format(now).toString(), message.substring(endIndex + 1, message.length()));
+                            this.chatLabel.setText(ciljniClient);
+                            msg_send = new Message().createJson(1, this.clientName, ciljniClient, dtf.format(now).toString(), message.substring(endIndex + 1, message.length()));
+                        }
                     }
                 }
                 else { // ce ima selectano nekega other clienta, ki mu hoce poslat private message
@@ -255,7 +258,7 @@ public class ChatClient extends Thread implements Initializable {
 
             // izpise se v UI, da je poslal
             try {
-                this.addMessage(msg_send);
+                if (!msg_send.equals(""))  this.addMessage(msg_send);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -270,10 +273,9 @@ public class ChatClient extends Thread implements Initializable {
 
     public void addMessage(String message) throws InterruptedException { // TUKAJ SE INTERPRETIRA JSON, KI SMO GA DOBILI (BOLJSE IME BI BILO MOGOCE "interpretMessage" ali "recieveMessage", ampak ok)
 
-        // @SuppressWarnings("unused") // it is used, but inside the run function. VScode bugging
         ChatClient c = this;
 
-        Platform.runLater(new Runnable() {
+        Platform.runLater(new Runnable() { // moramo dati, saj pri javaFX lahko spreminja UI samo GUI Thread, s tem povemo naj pocaka na main Thread in da njemu to nalogo (ne vedno ampak se zgodi in je lazje samo ob spremembi UI-a vedno to dati)
             
             @SuppressWarnings("unchecked")
             public void run() {
@@ -421,7 +423,7 @@ public class ChatClient extends Thread implements Initializable {
                                 
                                 Menu friendMenu = new Menu(friend);
 
-                                MenuItem removeFriend = new MenuItem("REMOVE FRIENDSHIP");
+                                MenuItem removeFriend = new MenuItem("Unfriend");
                                 removeFriend.setOnAction(event -> {
 
                                     Thread removeFriendship = new Thread() {
@@ -448,7 +450,7 @@ public class ChatClient extends Thread implements Initializable {
                                     removeFriendship.run();
                                 });
 
-                                MenuItem sendPrivateMessage = new MenuItem("SEND PRIVATE MESSAGE");
+                                MenuItem sendPrivateMessage = new MenuItem("Send private message");
                                 sendPrivateMessage.setOnAction(event -> {
 
                                     Thread t = new Thread() {
@@ -467,7 +469,7 @@ public class ChatClient extends Thread implements Initializable {
                                     t.run();
                                 });
 
-                                MenuItem showHistory = new MenuItem("SHOW HISTORY");
+                                MenuItem showHistory = new MenuItem("Show history");
                                 showHistory.setOnAction(event -> {
 
                                     Thread t = new Thread() {
@@ -521,7 +523,7 @@ public class ChatClient extends Thread implements Initializable {
                                 
                                 Menu friendRMenu = new Menu(friendR);
 
-                                MenuItem accept = new MenuItem("ACCEPT");
+                                MenuItem accept = new MenuItem("Accept");
                                 accept.setOnAction(event -> {
 
                                     Thread acceptFriendRequest = new Thread() {
@@ -548,7 +550,7 @@ public class ChatClient extends Thread implements Initializable {
                                     acceptFriendRequest.run();
                                 });
 
-                                MenuItem decline = new MenuItem("DECLINE");
+                                MenuItem decline = new MenuItem("Decline");
                                 decline.setOnAction(event -> {
 
                                     Thread declineFriendRequest = new Thread() {
@@ -668,16 +670,29 @@ public class ChatClient extends Thread implements Initializable {
 
             public void run() {
                     
-                mainPane.setStyle(String.format("primary-color: #%s; secondary-color: #%s; -fx-background-color: primary-color; /* primary ali secondary, idk yet */", 
-                primary, secondary)); // "https://htmlcolorcodes.com/color-picker/" <- tuki pejt napis "EEEDDD" pa scroll po barvah za primary
-                                      //                                            <- tuki pejt napis "FFFEEE" pa scroll the same kot primary za secondary 
-                                      //                                            (glej HSL, 1st value the same: fixed je 7% in 90% / 97%)
+                mainPane.setStyle(String.format("primary-color: #%s; secondary-color: #%s; -fx-background-color: primary-color;", 
+                primary, secondary)); 
+                
+                // LIGHT COLORS (1 - 5), HSL = x, 7%, 90/97%
+                // "https://htmlcolorcodes.com/color-picker/" <- tuki pejt napis "EEEDDD" pa scroll po barvah za primary
+                //                                            <- tuki pejt napis "FFFEEE" pa scroll the same kot primary za secondary 
+
+                // LIGHTISH COLORS (6 - ?), HSL = x, 15%, 86/93%
+                // primary   placeholder: "ECDBC9"
+                // secondary placeholder: "FFEDD9"
+
+                // TODO: REVERSE COLORS (...), HSL = ... (mogoce najd better name idk)
+                // ideja da je tko
+                //      primary color   light:   (x, 10%, 95%)ish
+                //      secondary color darkish: (x, 30%, 75%)ish myb
             }
         });
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        ChatClient c = this;
 
         // naredimo change listener, da ko selecta user, se spremeni label value
         // to ima 2 funckionalnosti
@@ -706,18 +721,29 @@ public class ChatClient extends Thread implements Initializable {
                     protected void updateItem(String item, boolean empty) {
 
                         super.updateItem(item, empty);
+
                         if (empty || item == null) {
 
                             setText(null);
                             setGraphic(null);
+                            setContextMenu(null);
+                        }
+                        else if (item.equals("PUBLIC") || item.equals(c.clientName)) { // if the item is not a different user, we dont add the contextMenu
+
+                            setText(item);
+                            setGraphic(null);
+                            setContextMenu(null);
                         }
                         else {
 
                             setText(item);
 
+                            boolean isFriend = (friendList != null && friendList.containsKey(getText()));
+
                             // naredimo userMenu, ki pokaze actions za user
                             ContextMenu userOptions = new ContextMenu();
 
+                            // 1) show history
                             MenuItem showHistory = new MenuItem("Show History");
                             showHistory.setOnAction(event -> {
 
@@ -745,40 +771,44 @@ public class ChatClient extends Thread implements Initializable {
                                 historyRequestSender.run();
                             });
 
-                            // TODO: nared, da ce je friend je namest to send private message alpa kej idk neki si zmisl
-                            // TODO: nared pac setOnAction pol 
-                            // TODO: nared, da seb pa "PUBLIC" pac nemors to kliknt ig
-                            MenuItem addFriend = new MenuItem("Send Friend Request");
-                            addFriend.setOnAction(event -> { // on action it send a friend Request to certain user
+                            userOptions.getItems().addAll(showHistory);
 
-                                Thread friendRequestSender = new Thread() {
+                            // 2) add friend
+                            if (!isFriend) { // ce ni friend potem, dodamo moznost da senda friend request
 
-                                    public void run() {
-                    
-                                        Platform.runLater(new Runnable() {
-                    
-                                            public void run() {
-
-                                                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm:ss");
-                                                LocalDateTime now = LocalDateTime.now();
-                    
-                                                try {
-                                                    out.writeUTF(new Request().createRequest(996, clientName, getItem(), dtf.format(now).toString()));
-                                                } catch (IOException e) {
-                                                    e.printStackTrace();
+                                MenuItem addFriend = new MenuItem("Send Friend Request");
+                                addFriend.setOnAction(event -> { // on action it send a friend Request to certain user
+    
+                                    Thread friendRequestSender = new Thread() {
+    
+                                        public void run() {
+                        
+                                            Platform.runLater(new Runnable() {
+                        
+                                                public void run() {
+    
+                                                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm:ss");
+                                                    LocalDateTime now = LocalDateTime.now();
+                        
+                                                    try {
+                                                        out.writeUTF(new Request().createRequest(996, clientName, getItem(), dtf.format(now).toString()));
+                                                    } catch (IOException e) {
+                                                        e.printStackTrace();
+                                                    }
                                                 }
-                                            }
-                                        });
-                                    }
-                                };
-                                friendRequestSender.run();
-                            });
+                                            });
+                                        }
+                                    };
+                                    friendRequestSender.run();
+                                });
 
-                            userOptions.getItems().addAll(showHistory, addFriend);
+                                userOptions.getItems().addAll(addFriend);
+                            }
+
                             setContextMenu(userOptions);
 
-                            // za friend Icon
-                            if (friendList != null && friendList.containsKey(getText())) {
+                            // friend Icon
+                            if (isFriend) {
 
                                 ImageView image = new ImageView(getClass().getResource("media/icons/friendIcon.png").toExternalForm());
                                 image.setFitWidth(20);
@@ -800,6 +830,8 @@ public class ChatClient extends Thread implements Initializable {
 
         // COLORS SUBMENU
         this.colors = new Menu("Change Color");
+
+        // LIGH COLORS, HSL = x, 7%, 90/97%
 
         ImageView imageColor1 = new ImageView(getClass().getResource("media/colors/color1.png").toExternalForm());
         imageColor1.setFitHeight(20);
@@ -829,7 +861,7 @@ public class ChatClient extends Thread implements Initializable {
         MenuItem color2 = new MenuItem("Twilight Blue", imageColor2);
         color2.setOnAction(event -> {
 
-            Thread color22Changer = new Thread() { // cyan
+            Thread color22Changer = new Thread() { // (LIGHT) cyan
 
                 public void run() {
 
@@ -851,7 +883,7 @@ public class ChatClient extends Thread implements Initializable {
         MenuItem color3 = new MenuItem("Pearly Red", imageColor3);
         color3.setOnAction(event -> {
 
-            Thread color23Changer = new Thread() { // red
+            Thread color23Changer = new Thread() { // (LIGHT) red
 
                 public void run() {
 
@@ -873,7 +905,7 @@ public class ChatClient extends Thread implements Initializable {
         MenuItem color4 = new MenuItem("Hint Of Green", imageColor4);
         color4.setOnAction(event -> {
 
-            Thread color24Changer = new Thread() { // green
+            Thread color24Changer = new Thread() { // (LIGHT) green
 
                 public void run() {
 
@@ -895,7 +927,7 @@ public class ChatClient extends Thread implements Initializable {
         MenuItem color5 = new MenuItem("Mercury Purple", imageColor5);
         color5.setOnAction(event -> {
 
-            Thread color25Changer = new Thread() { // hard blue
+            Thread color25Changer = new Thread() { // (LIGHT) hard blue
 
                 public void run() {
 
@@ -910,8 +942,32 @@ public class ChatClient extends Thread implements Initializable {
             };
             color25Changer.run();
         });
+        
+        // LIGHTER COLORS, HSL = x, 15%, 86/93%
 
-        colors.getItems().addAll(color1, color2, color3, color4, color5);
+        ImageView imageColor6 = new ImageView(getClass().getResource("media/colors/color6.png").toExternalForm());
+        imageColor6.setFitHeight(20);
+        imageColor6.setFitWidth(20);
+        MenuItem color6 = new MenuItem("Almondy Orange", imageColor6);
+        color6.setOnAction(event -> {
+
+            Thread color26Changer = new Thread() { // (LIGHTER) orange
+
+                public void run() {
+
+                    Platform.runLater(new Runnable() {
+
+                        public void run() {
+
+                            changeColors("ECDBC9", "FFEDD9");
+                        }
+                    });
+                }
+            };
+            color26Changer.run();
+        });
+
+        colors.getItems().addAll(color1, color2, color3, color4, color5, color6);
 
         // FRIEND LIST
         this.friendsList = new Menu("Friends");
