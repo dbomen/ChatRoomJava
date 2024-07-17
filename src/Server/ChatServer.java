@@ -417,7 +417,7 @@ public class ChatServer {
         };
 
         // we check if they are already friends
-        boolean alreadyFriends = this.getFriendsList(user1).containsKey(user2);
+        boolean alreadyFriends = (this.getFriendsList(user1) != null && this.getFriendsList(user1).containsKey(user2));
         if (alreadyFriends) {
 
             return false;
@@ -1044,7 +1044,7 @@ class ChatServerConnector extends Thread {
                 }
                 else if (request.getTip() == 996) { // sendFriendRequest
 
-                    boolean alreadyFriends = this.server.getFriendsList(request.getSender()).containsKey(request.getOtherInfo());
+                    boolean alreadyFriends = (this.server.getFriendsList(request.getSender()) != null && this.server.getFriendsList(request.getSender()).containsKey(request.getOtherInfo()));
                     boolean selfFriend = request.getSender().equals(request.getOtherInfo());
                     boolean newFriendRequest = (alreadyFriends || selfFriend) ? false : this.server.sendFriendRequest(request.getSender(), request.getOtherInfo());
 
@@ -1065,7 +1065,7 @@ class ChatServerConnector extends Thread {
                 }
                 else if (request.getTip() == 997) { // removeFriendRequest Request
 
-                    boolean friendRequestExists = this.server.getFriendRequestList(request.getSender()).contains(request.getOtherInfo());
+                    boolean friendRequestExists = (this.server.getFriendRequestList(request.getSender()) != null && this.server.getFriendRequestList(request.getSender()).contains(request.getOtherInfo()));
 
                     this.server.removeFriendRequest(request.getOtherInfo(), request.getSender());
                     msg_send = (friendRequestExists)
@@ -1081,7 +1081,7 @@ class ChatServerConnector extends Thread {
                 }
                 else if (request.getTip() == 998) { // removeFriend Request
 
-                    boolean areFriends = this.server.getFriendsList(request.getSender()).containsKey(request.getOtherInfo());
+                    boolean areFriends = (this.server.getFriendsList(request.getSender()) != null && this.server.getFriendsList(request.getSender()).containsKey(request.getOtherInfo()));
 
                     this.server.removeFriendship(request.getSender(), request.getOtherInfo());
                     msg_send = (areFriends)

@@ -64,6 +64,8 @@ Here you can select if you want to run the Server or the app and then run them b
 - Go to src/Server/ChatServer.java and change the path, underlined in the image below, to the path of your repository. Make sure to include "src/Server/db"\
 ![alt text](media/dep6.png)
 
+Keep in mind that it might take a little time for the program to work. I recommend that you open the *ChatServer.java* and *ChatClient.java* files and wait a minute for them to load. I conducted an experiment on another laptop by following the Installation section of this manual. That laptop was not very powerful and needed some time. Initially, I encountered errors on the client side for about one minute, but then the errors stopped, and the program worked.
+
 ## HOW TO USE
 
 To run the application:
@@ -90,9 +92,9 @@ When you first open the application, you will see the login/signup menu, built i
 - **Login**: Choose an account and password from src/Server/db/users/.\
 ![alt text](media/client1.png)
 - **Signup**: Input your username and password, which will be saved to the server's database.\
-![alt text](media/client2.png) 
+![alt text](media/client2.png)
 
-After logging in, you will see the main application. In version 1.0.0, the available actions and functionalities are:
+After logging in, you will see the main application. In version 1.0.1, the available actions and functionalities are:
 - [MESSAGES](#messages)
     - [PUBLIC MESSAGES](#public-messages)
     - [PRIVATE MESSAGES](#private-messages)
@@ -100,6 +102,7 @@ After logging in, you will see the main application. In version 1.0.0, the avail
 - [ACTIONS](#actions)
     - [HISTORY](#history)
     - [COLOR](#color)
+    - [FRIENDS](#friends)
 
 #### MESSAGES
 
@@ -136,11 +139,36 @@ History with a user is a collection of your previous conversations with them, sa
 
 ##### COLOR
 
-By right-clicking anywhere outside the menu, you can change the color of the application. There are currently five colors to choose from:
+By right-clicking anywhere outside the menu and hovering over the *Change Color* section, you can change the color of the application. There are currently six colors to choose from:
 - Buttery Yellow (the original/default color)
 - Twilight Blue
 - Pearly Red
 - Hint Of Green
 - Mercury Purple
-  
+- Almondy Orange
+
 ![alt text](media/actions4.png)
+
+##### FRIENDS
+
+Friends is a feature released in version 1.0.1. It allows you to permanently add or remove friends and perform actions through the context menu of the application. You can add friends by right-clicking on a user in the left online user list and selecting *Send Friend Request*. The friend request will be saved on the receiver's account until they accept or decline it.
+
+![alt text](media/actions5.png)
+
+You can see your friends or friend requests by right-clicking and hovering over the *Friends* or *Friend Request* section. If your friend is online, a friend symbol will appear in front of their name in the online user list on the left. The current actions available between friends are:
+- Unfriend
+- Send private message
+- Show history
+
+![alt text](media/actions6.png)
+![alt text](media/actions7.png)
+
+You can also get system messages related to the friends feature upon login. These messages can be:
+- A reminder if you have more than one pending friend request
+- Information about friends-related activity while you were offline, such as:
+  - Receiving a new friend request
+  - Someone declining your friend request
+  - Someone accepting your friend request
+  - Someone unfriending you
+
+![alt text](media/actions8.png)
