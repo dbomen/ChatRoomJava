@@ -75,7 +75,7 @@ To run the application:
 
 You should only run one server at a time, but you can run multiple client applications simultaneously.
 
-The following text explains how to use and test the application. I also created a short video demonstrating all the features below: [link](https://www.youtube.com/watch?v=JDjVa-9h8oU).
+The following text explains how to use and test the application. I also created a short video demonstrating all the features below: [link](https://www.youtube.com/watch?v=Am_PUWN49Yo).
 
 Headers:
 - [SERVER SIDE](#server-side)

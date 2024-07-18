@@ -1,1 +1,1 @@
-["{\"tipGsona\":1,\"tip\":2,\"sender\":\"SYSTEM\",\"time\":\"17.07.2024 - 21:42:45\",\"body\":\"\\u003cdomen\\u003e DECLINED YOUR FRIEND REQUEST\"}"]
+[]

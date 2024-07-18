@@ -1,15 +1,3 @@
-{"tipGsona":1,"tip":1,"sender":"domen2","reciever":"domen","time":"05.07.2024 - 12:56:46","body":"testting"}
-{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"05.07.2024 - 12:58:17","body":"test"}
-{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"05.07.2024 - 12:59:20","body":"testtin"}
-{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"05.07.2024 - 13:00:11","body":"yoyoyy"}
-{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"05.07.2024 - 13:00:36","body":"ashdioashdoiashdo"}
-{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"05.07.2024 - 13:01:14","body":"jijijiji"}
-{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"05.07.2024 - 13:04:01","body":"yoyojyoj"}
-{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"05.07.2024 - 13:04:38","body":"halsklk"}
-{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"05.07.2024 - 13:12:42","body":"H"}
-{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"05.07.2024 - 13:13:24","body":"/H"}
-{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"05.07.2024 - 13:13:51","body":"/H"}
-{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"05.07.2024 - 13:14:25","body":"H"}
 {"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"05.07.2024 - 13:14:48","body":"H"}
 {"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"06.07.2024 - 10:37:07","body":"flline message"}
 {"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"06.07.2024 - 10:48:45","body":"yosef"}
@@ -47,3 +35,16 @@
 {"tipGsona":1,"tip":1,"sender":"domen2","reciever":"domen","time":"17.07.2024 - 18:45:07","body":"hello"}
 {"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"17.07.2024 - 18:45:23","body":"yo"}
 {"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"17.07.2024 - 18:53:19","body":"to"}
+{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"18.07.2024 - 13:26:11","body":"hi"}
+{"tipGsona":1,"tip":1,"sender":"domen2","reciever":"domen","time":"18.07.2024 - 13:26:18","body":"hey"}
+{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"18.07.2024 - 13:26:41","body":"still here?"}
+{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"18.07.2024 - 13:30:15","body":"hi domen2"}
+{"tipGsona":1,"tip":1,"sender":"domen2","reciever":"domen","time":"18.07.2024 - 13:30:20","body":"hey"}
+{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"18.07.2024 - 13:30:50","body":"still here?"}
+{"tipGsona":1,"tip":1,"sender":"domen2","reciever":"domen","time":"18.07.2024 - 13:31:41","body":"hi friend"}
+{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"18.07.2024 - 13:31:53","body":"I dont like you anymore"}
+{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"18.07.2024 - 13:49:04","body":"hi domen2"}
+{"tipGsona":1,"tip":1,"sender":"domen2","reciever":"domen","time":"18.07.2024 - 13:49:10","body":"hey"}
+{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"18.07.2024 - 13:49:31","body":"still here?"}
+{"tipGsona":1,"tip":1,"sender":"domen","reciever":"domen2","time":"18.07.2024 - 13:50:22","body":"hi friend"}
+{"tipGsona":1,"tip":1,"sender":"domen2","reciever":"domen","time":"18.07.2024 - 13:50:34","body":"I dont like you anymore"}
