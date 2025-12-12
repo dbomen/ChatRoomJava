@@ -1,5 +1,8 @@
 # CHATROOMJAVA
 
+> [!IMPORTANT]
+> archived and not in active development
+
 My first "BIG" personal project. This is a Server-Client chatroom application. It was originally a school project, where we had to make a command-line based chatroom with public and private messages. I have since greatly expanded on it and added:
 
 > **Server Side**
@@ -21,9 +24,3 @@ This project was originally in another repository, but I decided to create separ
 > I created a short video showcasing all the features in version 1.0.1: [link](https://www.youtube.com/watch?v=Am_PUWN49Yo)\
 > For details about releases, refer to the [RELEASES](Manuals/Releases.md)\
 > The main branch is for releases only. Checkout the feature branch to see the latest changes.
-
-### Goals
-- **FUNCTIONALITY**
-  - **ADD SERVER SIDE SETTINGS SAVING (E.g. saving GUI color)**
-- **REPO / PROJECT BIG PICTURE:**
-  - **PROJECT REVAMP TO MAVEN / GRADLE**
